@@ -2,7 +2,7 @@
 title: 'Documento de código: Preferencias redistributivas en contextos desiguales'
 author: "Gonzalo Franetovic"
 date: "22/10/2018"
-output: pdf_document
+output: html_document
 ---
  A continuación se presenta el documento de código de la presente investigación. Se expone paso a paso el ajuste y fundición de bases de datos, limpieza y recodificación de variables, estimación de modelo y visualizaciones gráficas. Cabe precisar que se extrajeron las bases de datos directamente desde la página web de Lapop, por lo que hay diferencias mínimas en algunas variables. 
  
@@ -18,7 +18,7 @@ search()
 
 + Lectura de bases de datos LAPOP 2008, 2010, 2012, 2014 y transformación a dataframe.
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
 #Directorio y bases de datos
 setwd("C:\\Users\\sebastian\\Desktop\\Daniel\\Asistente Fondecyt\\redist_lapop\\Bases")
 lp08 <- read_dta("2008.dta")
@@ -39,7 +39,7 @@ names(lp14)= tolower(names(lp14))
 
 + Exploración y fundición de la bases de datos 
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
 #Revisamos los primeros casos
 head (lp08)
 head (lp10)
@@ -72,7 +72,7 @@ lpop <- lpop[order(lpop$pais), ]
  
 + Selección e identificación de los países de la muestra
  
-```{r echo=TRUE, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
 #Removemos los países que no vamos a considerar en la muestra
 lpop<-lpop[!(lpop$pais>21),]
 lpop$pais[lpop$pais==21] <- "18"
@@ -83,7 +83,7 @@ describe(lpop$pais)
  
 + Variables de nivel individual
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
 #Olas: 
 lpop$wave <- lpop$year
 lpop$wave=rec(lpop$wave, rec=c("2008=08", "2010=10", "2012=12", "2014=14"))
@@ -134,14 +134,22 @@ as.factor(lpop$educacion_r)
 describe(lpop$educacion_r)
 ```
 
-+ Descriptivo de las variables y base de datos transitoria
++ Base de datos transitoria
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-describe(lpop)
+```{r eval=FALSE, include=FALSE}
 save(lpop, file = "lpop.RData")
 save(lp081, file = "lpop08.RData")
 save(lp101, file = "lpop10.RData")
 save(lp121, file = "lpop12.RData")
 save(lp141, file = "lpop14.RData")
 ```
+
+
++ Descriptivo de las variables y base de datos transitoria
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+load("C:\\Users\\sebastian\\Desktop\\Daniel\\Asistente Fondecyt\\redist_lapop\\Bases\\lpop.RData")
+describe(lpop)
+```
+
 
