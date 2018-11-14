@@ -1,0 +1,147 @@
+---
+title: 'Documento de código: Preferencias redistributivas en contextos desiguales'
+author: "Gonzalo Franetovic"
+date: "22/10/2018"
+output: pdf_document
+---
+ A continuación se presenta el documento de código de la presente investigación. Se expone paso a paso el ajuste y fundición de bases de datos, limpieza y recodificación de variables, estimación de modelo y visualizaciones gráficas. Cabe precisar que se extrajeron las bases de datos directamente desde la página web de Lapop, por lo que hay diferencias mínimas en algunas variables. 
+ 
++ Instalación Paquetes de trabajo
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(car, stargazer, haven, foreign, stargazer, xtable, psych, psy, base, magrittr, readxl, lme4, texreg, varhandle, countrycode, laeken, multilevel, ggplot2, ggthemes, extrafont, plyr, data.table, doBy, multiwayvcov, miceadds, RColorBrewer, scales, haven, margins, grDevices, interplot, lmtest, lsmeans, lattice, broom, sjPlot, lmerTest, labelled, dplyr, sjmisc, tidyverse, Hmisc)
+search()
+
+
+```
+
++ Lectura de bases de datos LAPOP 2008, 2010, 2012, 2014 y transformación a dataframe.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Directorio y bases de datos
+setwd("C:\\Users\\sebastian\\Desktop\\Daniel\\Asistente Fondecyt\\redist_lapop\\Bases")
+lp08 <- read_dta("2008.dta")
+lp10 <- read_dta("2010.dta")
+lp12 <- read_dta("2012.dta")
+lp14 <- read_dta("2014.dta")
+#Transformación a Data Frame 
+lp08=as.data.frame(lp08) 
+lp10=as.data.frame(lp10)
+lp12=as.data.frame(lp12)
+lp14=as.data.frame(lp14)
+#Nombres de las variables en minúscula
+names(lp08)= tolower(names(lp08)) 
+names(lp10)= tolower(names(lp10)) 
+names(lp12)= tolower(names(lp12)) 
+names(lp14)= tolower(names(lp14)) 
+```
+
++ Exploración y fundición de la bases de datos 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#Revisamos los primeros casos
+head (lp08)
+head (lp10)
+head (lp12)
+head (lp14)
+#Generamos variable year para la base de 2014
+lp14$year <- "2014"
+label(lp14$year) <- "Año" 
+#Selección de variables
+#2008
+lp081=lp08 %>% dplyr::select(pais, year, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp081) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+head (lp081)
+#2010
+lp101=lp10 %>% dplyr::select(pais, year, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp101) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+head (lp101)
+#2012
+lp121=lp12 %>% dplyr::select(pais, year, ros4, q1, q2, q11, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp121) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+head (lp121)
+#2014
+lp141=lp14 %>% dplyr::select(pais, year, ros4, q1, q2, q11n, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp141) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+head (lp141)
+ #Fundir Bases de datos
+lpop=rbind(lp081, lp101, lp121, lp141)
+lpop <- lpop[order(lpop$pais), ]
+```
+ 
++ Selección e identificación de los países de la muestra
+ 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Removemos los países que no vamos a considerar en la muestra
+lpop<-lpop[!(lpop$pais>21),]
+lpop$pais[lpop$pais==21] <- "18"
+#Países de la muestra
+lpop$pais=rec(lpop$pais, rec=c("1=MEX", "2=GTM", "3=SLV", "4=HND", "5=NIC", "6=CRI", "7=PAN", "8=COL", "9=ECU", "10=BOL", "11=PER", "12=PRY", "13=CHL", "14=URY", "15=BRA", "16=VEN", "17=ARG", "18=DOM"))
+describe(lpop$pais)
+```
+ 
++ Variables de nivel individual
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#Olas: 
+lpop$wave <- lpop$year
+lpop$wave=rec(lpop$wave, rec=c("2008=08", "2010=10", "2012=12", "2014=14"))
+describe(lpop$wave)
+#Pais_Año:
+lpop$pais_wave <- do.call(paste, c(lpop[c("pais", "wave")], sep = "_")) 
+#Redistribución:
+# Dummy
+lpop$redistribucion_r <-as.numeric(lpop$redistribucion >= 7)
+# Log Natural
+lpop$redistribucion_ln <- log(lpop$redistribucion)
+#Tablas
+table(lpop$redistribucion)
+table(lpop$redistribucion_r)
+table(lpop$redistribucion_ln)
+with(lpop, table(lpop$pais, lpop$year))
+#Hombre
+lpop$sexo <-as.numeric(lpop$sexo <= 1)
+table(lpop$sexo)
+#Edad
+# Continua
+lpop$edad[lpop$edad<=17] <- NA
+# Cuadrática 
+lpop$edad2 <- (lpop$edad)^2
+#Tablas
+table(lpop$edad)
+table(lpop$edad2)
+#Casado (o conviviente)
+lpop$ecivil_r=rec(lpop$ecivil, rec="2=1; 3=1; 7=1; 1=0; 4:6=0") 
+table(lpop$ecivil)
+table(lpop$ecivil_r)
+#Izquierda
+#Continua
+lpop$izquierda <- 1+10-(lpop$ideopolitica)
+describe(lpop$ideopolitica)
+describe(lpop$izquierda)
+#Factor
+lpop$ideopolitica_f=rec(lpop$izquierda, rec="1:4=1; 5:6=2; 7:10=3")
+as.factor(lpop$ideopolitica_f)
+describe(lpop$ideopolitica_f)
+#Situación Laboral
+lpop$sitlaboral_r=rec(lpop$sitlaboral, rec="4=1; 6=1; 3=2; 5=2; 7=2; 1:2=3")
+as.factor(lpop$sitlaboral_r)
+describe(lpop$sitlaboral_r)
+#Educación 
+lpop$educacion_r=rec(lpop$educacion, rec="0:6=1; 7:12=2; 13:18=3")
+as.factor(lpop$educacion_r)
+describe(lpop$educacion_r)
+```
+
++ Descriptivo de las variables y base de datos transitoria
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+describe(lpop)
+save(lpop, file = "lpop.RData")
+save(lp081, file = "lpop08.RData")
+save(lp101, file = "lpop10.RData")
+save(lp121, file = "lpop12.RData")
+save(lp141, file = "lpop14.RData")
+```
+
