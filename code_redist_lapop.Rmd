@@ -2,7 +2,9 @@
 title: 'Documento de código: Preferencias redistributivas en contextos desiguales'
 author: "Gonzalo Franetovic"
 date: "22/10/2018"
-output: html_document
+output:
+  html_document: default
+  word_document: default
 ---
  A continuación se presenta el documento de código de la presente investigación. Se expone paso a paso el ajuste y fundición de bases de datos, limpieza y recodificación de variables, estimación de modelo y visualizaciones gráficas. Cabe precisar que se extrajeron las bases de datos directamente desde la página web de Lapop, por lo que hay diferencias mínimas en algunas variables. 
  
@@ -145,7 +147,7 @@ save(lp141, file = "lpop14.RData")
 ```
 
 
-+ Descriptivo de las variables y base de datos transitoria
++ Descriptivos de las variables de nivel 1
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 load("C:\\Users\\sebastian\\Desktop\\Daniel\\Asistente Fondecyt\\redist_lapop\\Bases\\lpop.RData")
