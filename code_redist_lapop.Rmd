@@ -22,7 +22,6 @@ search()
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
 #Directorio y bases de datos
-setwd("C:\\Users\\sebastian\\Desktop\\Daniel\\Asistente Fondecyt\\redist_lapop\\Bases")
 lp08 <- read_dta("2008.dta")
 lp10 <- read_dta("2010.dta")
 lp12 <- read_dta("2012.dta")
@@ -150,7 +149,7 @@ save(lp141, file = "lpop14.RData")
 + Descriptivos de las variables de nivel 1
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-load("C:\\Users\\sebastian\\Desktop\\Daniel\\Asistente Fondecyt\\redist_lapop\\Bases\\lpop.RData")
+load("lpop.RData")
 describe(lpop)
 ```
 
