@@ -51,20 +51,20 @@ lp14$year <- "2014"
 label(lp14$year) <- "Año" 
 #Selección de variables
 #2008
-lp081=lp08 %>% dplyr::select(pais, year, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp081) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+lp081=lp08 %>% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp081) <- c("pais","year","weight1500", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
 head (lp081)
 #2010
-lp101=lp10 %>% dplyr::select(pais, year, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp101) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+lp101=lp10 %>% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp101) <- c("pais","year", "weight1500" , "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
 head (lp101)
 #2012
-lp121=lp12 %>% dplyr::select(pais, year, ros4, q1, q2, q11, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp121) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+lp121=lp12 %>% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp121) <- c("pais","year","weight1500" , "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
 head (lp121)
 #2014
-lp141=lp14 %>% dplyr::select(pais, year, ros4, q1, q2, q11n, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp141) <- c("pais","year", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
+lp141=lp14 %>% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11n, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
+colnames(lp141) <- c("pais","year", "weight1500", "redistribucion", "sexo", "edad", "ecivil", "ideopolitica", "sitlaboral", "educacion", "ingreso", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")
 head (lp141)
  #Fundir Bases de datos
 lpop=rbind(lp081, lp101, lp121, lp141)
@@ -77,9 +77,12 @@ lpop <- lpop[order(lpop$pais), ]
 #Removemos los países que no vamos a considerar en la muestra
 lpop<-lpop[!(lpop$pais>21),]
 lpop$pais[lpop$pais==21] <- "18"
-#Países de la muestra
-lpop$pais=rec(lpop$pais, rec=c("1=MEX", "2=GTM", "3=SLV", "4=HND", "5=NIC", "6=CRI", "7=PAN", "8=COL", "9=ECU", "10=BOL", "11=PER", "12=PRY", "13=CHL", "14=URY", "15=BRA", "16=VEN", "17=ARG", "18=DOM"))
+#Países de la muestra (Etiquetas)
+lpop$pais <- factor(lpop$pais,
+levels = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18),
+labels = c("MEX", "GTM", "SLV", "HND", "NIC", "CRI", "PAN", "COL", "ECU", "BOL", "PER", "PRY", "CHL", "URY", "BRA", "VEN", "ARG", "DOM"))
 describe(lpop$pais)
+
 ```
  
 + Variables de nivel individual
@@ -89,11 +92,15 @@ describe(lpop$pais)
 lpop$wave <- lpop$year
 lpop$wave=rec(lpop$wave, rec=c("2008=08", "2010=10", "2012=12", "2014=14"))
 describe(lpop$wave)
+
 #Pais_Año:
 lpop$pais_wave <- do.call(paste, c(lpop[c("pais", "wave")], sep = "_")) 
+
 #Redistribución:
 # Dummy
 lpop$redistribucion_r <-as.numeric(lpop$redistribucion >= 7)
+as.factor(lpop$redistribucion_r)
+
 # Log Natural
 lpop$redistribucion_ln <- log(lpop$redistribucion)
 #Tablas
@@ -101,9 +108,12 @@ table(lpop$redistribucion)
 table(lpop$redistribucion_r)
 table(lpop$redistribucion_ln)
 with(lpop, table(lpop$pais, lpop$year))
+
 #Hombre
 lpop$sexo <-as.numeric(lpop$sexo <= 1)
+as.factor(lpop$sexo)
 table(lpop$sexo)
+
 #Edad
 # Continua
 lpop$edad[lpop$edad<=17] <- NA
@@ -112,10 +122,13 @@ lpop$edad2 <- (lpop$edad)^2
 #Tablas
 table(lpop$edad)
 table(lpop$edad2)
+
 #Casado (o conviviente)
-lpop$ecivil_r=rec(lpop$ecivil, rec="2=1; 3=1; 7=1; 1=0; 4:6=0") 
+lpop$ecivil_r=rec(lpop$ecivil, rec="2=1; 3=1; 7=1; 1=0; 4:6=0")
+as.factor(lpop$ecivil_rec)
 table(lpop$ecivil)
 table(lpop$ecivil_r)
+
 #Izquierda
 #Continua
 lpop$izquierda <- 1+10-(lpop$ideopolitica)
@@ -125,26 +138,92 @@ describe(lpop$izquierda)
 lpop$ideopolitica_f=rec(lpop$izquierda, rec="1:4=1; 5:6=2; 7:10=3")
 as.factor(lpop$ideopolitica_f)
 describe(lpop$ideopolitica_f)
+
 #Situación Laboral
 lpop$sitlaboral_r=rec(lpop$sitlaboral, rec="4=1; 6=1; 3=2; 5=2; 7=2; 1:2=3")
 as.factor(lpop$sitlaboral_r)
 describe(lpop$sitlaboral_r)
+
 #Educación 
 lpop$educacion_r=rec(lpop$educacion, rec="0:6=1; 7:12=2; 13:18=3")
 as.factor(lpop$educacion_r)
 describe(lpop$educacion_r)
+
+#Ingreso 
+
+
+
+#Urbano
+lpop$zona[lpop$zona==2] <- 0
+as.factor(lpop$zona)
+table(lpop$zona)
+
+#Tamaño Ciudad
+lpop$tamano <- lpop$tamanociudad
+lpop$tamanociudad <- 1+5-(lpop$tamano)
+lpop$tamanociudad[lpop$tamanociudad<1] <- NA
+as.factor(lpop$tamanociudad)
+describe(lpop$tamanociudad)
+
+#Promedio confianza
+lpop$confianza <- rowMeans(lpop[c("conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos")], na.rm=TRUE)
+
+#Confianza en el sistema 
+#Missing=0: Inncesario realizar, con el promedio na.rm queda ok, confirmar de todos modos
+#lpop$conffaa[is.na(lpop$conffaa)] <- 0 #FFAA
+#lpop$confpolicia[is.na(lpop$confpolicia)] <- 0 #Policia
+#lpop$confjudicial[is.na(lpop$confjudicial)] <- 0 #Judicial
+#lpop$confejecutivo[is.na(lpop$confejecutivo)] <- 0 #Ejecutivo
+#lpop$confcongreso[is.na(lpop$confcongreso)] <- 0 #Congreso
+#lpop$confpartidos[is.na(lpop$confpartidos)] <- 0 #Partidos
+```
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+#Dummy de tiempo
+#2008
+lpop$ano_2008 <- 0
+lpop$ano_2008[lpop$year==2008] <- 1
+#2008
+lpop$ano_2010 <- 0
+lpop$ano_2010[lpop$year==2010] <- 1
+#2008
+lpop$ano_2012 <- 0
+lpop$ano_2012[lpop$year==2012] <- 1
+#2008
+lpop$ano_2014 <- 0
+lpop$ano_2014[lpop$year==2014] <- 1
+```
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+#Merge Variables de nivel país (2)
+n2 <- read_dta("N2.dta")
+n2=as.data.frame(n2) 
+names(n2)= tolower(names(n2)) 
+colnames(n2) <- c("pais", "year", "pais_nombre", "gini","pib", "gsocial", "desempleo", "informal", "bienestar", "bienestar1", "div_etnica", "div_religion", "div_lenguaje", "gini_mean", "pib_mean", "gsocial_mean", "desempleo_mean", "informal_mean", "gini_dif", "pib_dif", "gsocial_dif", "desempleo_dif", "informal_dif" )
+#Países de la muestra (Etiquetas)
+n2$pais <- factor(n2$pais,
+levels = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18),
+labels = c("MEX", "GTM", "SLV", "HND", "NIC", "CRI", "PAN", "COL", "ECU", "BOL", "PER", "PRY", "CHL", "URY", "BRA", "VEN", "ARG", "DOM"))
+#Año
+n2$year <- as.factor(n2$year)
+#Fundir
+lpop <- merge(lpop, n2, by=c("pais", "year"))
 ```
 
 + Base de datos transitoria
 
-```{r eval=FALSE, include=FALSE}
-save(lpop, file = "lpop.RData")
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+#Bases de datos intermedias
+save(n2, file = "n2.RData")
+save(lpop, file = "lpop.RData") #Incluye variables de nivel 1 y 2
 save(lp081, file = "lpop08.RData")
 save(lp101, file = "lpop10.RData")
 save(lp121, file = "lpop12.RData")
 save(lp141, file = "lpop14.RData")
-```
 
+#Bases de datos final: Omitimos missing 
+save(lpop, file = "lpop.RData")
+```
 
 + Descriptivos de las variables de nivel 1
 
@@ -152,5 +231,12 @@ save(lp141, file = "lpop14.RData")
 load("lpop.RData")
 describe(lpop)
 ```
+
++ Modelos
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
 
 
