@@ -130,30 +130,31 @@ $(document).ready(function () {
 <li>Instalación Paquetes de trabajo</li>
 </ul>
 <pre class="r"><code>if (!require(&quot;pacman&quot;)) install.packages(&quot;pacman&quot;)
-pacman::p_load(car, stargazer, haven, foreign, stargazer, xtable, psych, psy, base, magrittr, readxl, lme4, texreg, varhandle, countrycode, laeken, multilevel, ggplot2, ggthemes, extrafont, plyr, data.table, doBy, multiwayvcov, miceadds, RColorBrewer, scales, haven, margins, grDevices, interplot, lmtest, lsmeans, lattice, broom, sjPlot, lmerTest, labelled, dplyr, sjmisc, tidyverse, Hmisc)
+pacman::p_load(car, stargazer, haven, foreign, stargazer, xtable, psych, psy, base, magrittr, readxl, lme4, texreg, varhandle, countrycode, laeken, multilevel, ggplot2, ggthemes, extrafont, plyr, data.table, doBy, multiwayvcov, miceadds, RColorBrewer, scales, haven, margins, grDevices, interplot, lmtest, lsmeans, lattice, broom, sjPlot, lmerTest, labelled, dplyr, sjmisc, tidyverse, Hmisc, devtools, DescTools, descr)
 search()</code></pre>
-<pre><code>##  [1] &quot;.GlobalEnv&quot;           &quot;package:Hmisc&quot;        &quot;package:Formula&quot;     
-##  [4] &quot;package:survival&quot;     &quot;package:forcats&quot;      &quot;package:stringr&quot;     
-##  [7] &quot;package:purrr&quot;        &quot;package:readr&quot;        &quot;package:tidyr&quot;       
-## [10] &quot;package:tibble&quot;       &quot;package:tidyverse&quot;    &quot;package:sjmisc&quot;      
-## [13] &quot;package:dplyr&quot;        &quot;package:labelled&quot;     &quot;package:lmerTest&quot;    
-## [16] &quot;package:sjPlot&quot;       &quot;package:broom&quot;        &quot;package:lsmeans&quot;     
-## [19] &quot;package:lmtest&quot;       &quot;package:zoo&quot;          &quot;package:interplot&quot;   
-## [22] &quot;package:arm&quot;          &quot;package:abind&quot;        &quot;package:margins&quot;     
-## [25] &quot;package:scales&quot;       &quot;package:RColorBrewer&quot; &quot;package:miceadds&quot;    
-## [28] &quot;package:mice&quot;         &quot;package:lattice&quot;      &quot;package:multiwayvcov&quot;
-## [31] &quot;package:doBy&quot;         &quot;package:data.table&quot;   &quot;package:plyr&quot;        
-## [34] &quot;package:extrafont&quot;    &quot;package:ggthemes&quot;     &quot;package:ggplot2&quot;     
-## [37] &quot;package:multilevel&quot;   &quot;package:nlme&quot;         &quot;package:laeken&quot;      
-## [40] &quot;package:MASS&quot;         &quot;package:boot&quot;         &quot;package:countrycode&quot; 
-## [43] &quot;package:varhandle&quot;    &quot;package:texreg&quot;       &quot;package:lme4&quot;        
-## [46] &quot;package:Matrix&quot;       &quot;package:readxl&quot;       &quot;package:magrittr&quot;    
-## [49] &quot;package:psy&quot;          &quot;package:psych&quot;        &quot;package:xtable&quot;      
-## [52] &quot;package:foreign&quot;      &quot;package:haven&quot;        &quot;package:stargazer&quot;   
-## [55] &quot;package:car&quot;          &quot;package:carData&quot;      &quot;package:pacman&quot;      
-## [58] &quot;package:stats&quot;        &quot;package:graphics&quot;     &quot;package:grDevices&quot;   
-## [61] &quot;package:utils&quot;        &quot;package:datasets&quot;     &quot;package:methods&quot;     
-## [64] &quot;Autoloads&quot;            &quot;package:base&quot;</code></pre>
+<pre><code>##  [1] &quot;.GlobalEnv&quot;           &quot;package:descr&quot;        &quot;package:DescTools&quot;   
+##  [4] &quot;package:devtools&quot;     &quot;package:Hmisc&quot;        &quot;package:Formula&quot;     
+##  [7] &quot;package:survival&quot;     &quot;package:forcats&quot;      &quot;package:stringr&quot;     
+## [10] &quot;package:purrr&quot;        &quot;package:readr&quot;        &quot;package:tidyr&quot;       
+## [13] &quot;package:tibble&quot;       &quot;package:tidyverse&quot;    &quot;package:sjmisc&quot;      
+## [16] &quot;package:dplyr&quot;        &quot;package:labelled&quot;     &quot;package:lmerTest&quot;    
+## [19] &quot;package:sjPlot&quot;       &quot;package:broom&quot;        &quot;package:lsmeans&quot;     
+## [22] &quot;package:lmtest&quot;       &quot;package:zoo&quot;          &quot;package:interplot&quot;   
+## [25] &quot;package:arm&quot;          &quot;package:abind&quot;        &quot;package:margins&quot;     
+## [28] &quot;package:scales&quot;       &quot;package:RColorBrewer&quot; &quot;package:miceadds&quot;    
+## [31] &quot;package:mice&quot;         &quot;package:lattice&quot;      &quot;package:multiwayvcov&quot;
+## [34] &quot;package:doBy&quot;         &quot;package:data.table&quot;   &quot;package:plyr&quot;        
+## [37] &quot;package:extrafont&quot;    &quot;package:ggthemes&quot;     &quot;package:ggplot2&quot;     
+## [40] &quot;package:multilevel&quot;   &quot;package:nlme&quot;         &quot;package:laeken&quot;      
+## [43] &quot;package:MASS&quot;         &quot;package:boot&quot;         &quot;package:countrycode&quot; 
+## [46] &quot;package:varhandle&quot;    &quot;package:texreg&quot;       &quot;package:lme4&quot;        
+## [49] &quot;package:Matrix&quot;       &quot;package:readxl&quot;       &quot;package:magrittr&quot;    
+## [52] &quot;package:psy&quot;          &quot;package:psych&quot;        &quot;package:xtable&quot;      
+## [55] &quot;package:foreign&quot;      &quot;package:haven&quot;        &quot;package:stargazer&quot;   
+## [58] &quot;package:car&quot;          &quot;package:carData&quot;      &quot;package:pacman&quot;      
+## [61] &quot;package:stats&quot;        &quot;package:graphics&quot;     &quot;package:grDevices&quot;   
+## [64] &quot;package:utils&quot;        &quot;package:datasets&quot;     &quot;package:methods&quot;     
+## [67] &quot;Autoloads&quot;            &quot;package:base&quot;</code></pre>
 <ul>
 <li>Lectura de bases de datos LAPOP 2008, 2010, 2012, 2014 y transformación a dataframe.</li>
 </ul>
@@ -182,23 +183,22 @@ head (lp12)
 head (lp14)
 #Generamos variable year para la base de 2014
 lp14$year &lt;- &quot;2014&quot;
-label(lp14$year) &lt;- &quot;Año&quot; 
 #Selección de variables
 #2008
-lp081=lp08 %&gt;% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp081) &lt;- c(&quot;pais&quot;,&quot;year&quot;,&quot;weight1500&quot;, &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;)
+lp081=lp08 %&gt;% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp081) &lt;- c(&quot;pais&quot;,&quot;year&quot;, &quot;id&quot;, &quot;weight1500&quot;, &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;, &quot;hijos&quot;)
 head (lp081)
 #2010
-lp101=lp10 %&gt;% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp101) &lt;- c(&quot;pais&quot;,&quot;year&quot;, &quot;weight1500&quot; , &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;)
+lp101=lp10 %&gt;% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp101) &lt;- c(&quot;pais&quot;,&quot;year&quot;, &quot;id&quot;, &quot;weight1500&quot; , &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;, &quot;hijos&quot;)
 head (lp101)
 #2012
-lp121=lp12 %&gt;% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp121) &lt;- c(&quot;pais&quot;,&quot;year&quot;,&quot;weight1500&quot; , &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;)
+lp121=lp12 %&gt;% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp121) &lt;- c(&quot;pais&quot;,&quot;year&quot;, &quot;id&quot;, &quot;weight1500&quot; , &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;, &quot;hijos&quot;)
 head (lp121)
 #2014
-lp141=lp14 %&gt;% dplyr::select(pais, year, weight1500, ros4, q1, q2, q11n, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21)
-colnames(lp141) &lt;- c(&quot;pais&quot;,&quot;year&quot;, &quot;weight1500&quot;, &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;)
+lp141=lp14 %&gt;% dplyr::select(pais, year, uniq_id, weight1500, ros4, q1, q2, q11n, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp141) &lt;- c(&quot;pais&quot;,&quot;year&quot;, &quot;id&quot;, &quot;weight1500&quot;, &quot;redistribucion&quot;, &quot;sexo&quot;, &quot;edad&quot;, &quot;ecivil&quot;, &quot;ideopolitica&quot;, &quot;sitlaboral&quot;, &quot;educacion&quot;, &quot;ingreso&quot;, &quot;zona&quot;, &quot;tamanociudad&quot;, &quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;, &quot;hijos&quot;)
 head (lp141)
  #Fundir Bases de datos
 lpop=rbind(lp081, lp101, lp121, lp141)
@@ -213,7 +213,29 @@ lpop$pais[lpop$pais==21] &lt;- &quot;18&quot;
 lpop$pais &lt;- factor(lpop$pais,
 levels = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18),
 labels = c(&quot;MEX&quot;, &quot;GTM&quot;, &quot;SLV&quot;, &quot;HND&quot;, &quot;NIC&quot;, &quot;CRI&quot;, &quot;PAN&quot;, &quot;COL&quot;, &quot;ECU&quot;, &quot;BOL&quot;, &quot;PER&quot;, &quot;PRY&quot;, &quot;CHL&quot;, &quot;URY&quot;, &quot;BRA&quot;, &quot;VEN&quot;, &quot;ARG&quot;, &quot;DOM&quot;))
-describe(lpop$pais)</code></pre>
+describe(lpop$pais)
+describe(lpop$year)</code></pre>
+<ul>
+<li>Imputamos variable “WT” (Peso País) desde base externa para posterior ponderación de las bases de datos individuales de los países</li>
+</ul>
+<pre class="r"><code>#Importamos base de datos externa
+wt &lt;- read_dta(&quot;wt.dta&quot;)
+wt=as.data.frame(wt) #Transformamos a data frame
+colnames(wt) &lt;- c(&quot;pais&quot;, &quot;year&quot;, &quot;id&quot;, &quot;wt&quot;)
+#Removemos los países y olas que no vamos a considerar en la muestra
+wt&lt;-wt[!(wt$pais&gt;21),]
+wt$pais[wt$pais==21] &lt;- &quot;18&quot;
+wt$pais &lt;- factor(wt$pais,
+levels = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18),
+labels = c(&quot;MEX&quot;, &quot;GTM&quot;, &quot;SLV&quot;, &quot;HND&quot;, &quot;NIC&quot;, &quot;CRI&quot;, &quot;PAN&quot;, &quot;COL&quot;, &quot;ECU&quot;, &quot;BOL&quot;, &quot;PER&quot;, &quot;PRY&quot;, &quot;CHL&quot;, &quot;URY&quot;, &quot;BRA&quot;, &quot;VEN&quot;, &quot;ARG&quot;, &quot;DOM&quot;))
+wt&lt;-wt[!(wt$year&lt;2008),]
+wt &lt;- wt[order(wt$pais), ]
+#Merge: Se agregan observaciones con &quot;wt&quot;, pero sin información para las variabales del estudio: Se procede a borrar esos casos
+lpop &lt;- merge(lpop, wt, by=c(&quot;pais&quot;, &quot;year&quot;, &quot;id&quot;), all.x= TRUE)
+#Eliminamos casos duplicados generados
+lpop &lt;- ddply(lpop, .(lpop$pais, lpop$year, lpop$id), unique)
+#Revisamos
+table(lpop$pais, lpop$year)</code></pre>
 <ul>
 <li>Variables de nivel individual</li>
 </ul>
@@ -240,7 +262,7 @@ with(lpop, table(lpop$pais, lpop$year))
 
 #Hombre
 lpop$sexo &lt;-as.numeric(lpop$sexo &lt;= 1)
-as.factor(lpop$sexo)
+lpop$sexo &lt;-factor(lpop$sexo, levels = c(0,1), labels = c(&quot;Mujer&quot;, &quot;Hombre&quot;))
 table(lpop$sexo)
 
 #Edad
@@ -254,7 +276,7 @@ table(lpop$edad2)
 
 #Casado (o conviviente)
 lpop$ecivil_r=rec(lpop$ecivil, rec=&quot;2=1; 3=1; 7=1; 1=0; 4:6=0&quot;)
-as.factor(lpop$ecivil_rec)
+lpop$ecivil_r &lt;-factor(lpop$ecivil_r, levels = c(0,1), labels = c(&quot;Soltero&quot;, &quot;Casado&quot;))
 table(lpop$ecivil)
 table(lpop$ecivil_r)
 
@@ -265,46 +287,220 @@ describe(lpop$ideopolitica)
 describe(lpop$izquierda)
 #Factor
 lpop$ideopolitica_f=rec(lpop$izquierda, rec=&quot;1:4=1; 5:6=2; 7:10=3&quot;)
-as.factor(lpop$ideopolitica_f)
+lpop$ideopolitica_f &lt;-factor(lpop$ideopolitica_f, levels = c(1,2,3), labels = c(&quot;Derecha&quot;, &quot;Centro&quot;, &quot;Izquierda&quot;))
 describe(lpop$ideopolitica_f)
 
 #Situación Laboral
 lpop$sitlaboral_r=rec(lpop$sitlaboral, rec=&quot;4=1; 6=1; 3=2; 5=2; 7=2; 1:2=3&quot;)
-as.factor(lpop$sitlaboral_r)
+lpop$sitlaboral_r &lt;-factor(lpop$sitlaboral_r, levels = c(1,2,3), labels = c(&quot;No fuerza laboral&quot;, &quot;Desempleado&quot;, &quot;Empleado&quot;))
 describe(lpop$sitlaboral_r)
 
 #Educación 
 lpop$educacion_r=rec(lpop$educacion, rec=&quot;0:6=1; 7:12=2; 13:18=3&quot;)
-as.factor(lpop$educacion_r)
+lpop$educacion_r &lt;-factor(lpop$educacion_r, levels = c(1,2,3), labels = c(&quot;Primaria&quot;, &quot;Secundaria&quot;, &quot;Terciaria&quot;))
 describe(lpop$educacion_r)
-
-#Ingreso 
-
-
 
 #Urbano
 lpop$zona[lpop$zona==2] &lt;- 0
-as.factor(lpop$zona)
+lpop$zona &lt;-factor(lpop$zona, levels = c(0,1), labels = c(&quot;Rural&quot;, &quot;Urbano&quot;))
 table(lpop$zona)
 
 #Tamaño Ciudad
 lpop$tamano &lt;- lpop$tamanociudad
 lpop$tamanociudad &lt;- 1+5-(lpop$tamano)
 lpop$tamanociudad[lpop$tamanociudad&lt;1] &lt;- NA
-as.factor(lpop$tamanociudad)
+lpop$tamanociudad &lt;-factor(lpop$tamanociudad, levels = c(1,2,3,4,5), labels = c(&quot;Área rural&quot;, &quot;Ciudad pequeña&quot;, &quot;Ciudad mediana&quot;, &quot;Ciudad grande&quot;, &quot;Capital nacional&quot;))
 describe(lpop$tamanociudad)
 
 #Promedio confianza
 lpop$confianza &lt;- rowMeans(lpop[c(&quot;conffaa&quot;, &quot;confpolicia&quot;, &quot;confjudicial&quot;, &quot;confejecutivo&quot;, &quot;confcongreso&quot;, &quot;confpartidos&quot;)], na.rm=TRUE)
+describe(lpop$confianza)
+dim(lpop$confianza)</code></pre>
+<ul>
+<li>Variable ingreso</li>
+</ul>
+<pre class="r"><code>#Ingreso 
+#Mexico: cod. 1
+#2008
+freq(to_label(lpop$ingreso[lpop$year==2008 &amp; lpop$pais==&quot;MEX&quot;]))
+lpop$ingreso_r[lpop$year==2008 &amp; lpop$pais==&quot;MEX&quot;]&lt;- rec(lpop$ingreso,rec=&quot;1=400;2=1200;3=2000;4=2800;5=3600;6=4700;7=6100;8=8400;9=11750;10=13500;88=NA;98=NA&quot;)
+table(lpop$ingreso_r[lpop$year==2008 &amp; lpop$pais==&quot;MEX&quot;])
+summary(lpop$ingreso_r[lpop$year==2008 &amp; lpop$pais==&quot;MEX&quot;])
 
-#Confianza en el sistema 
-#Missing=0: Inncesario realizar, con el promedio na.rm queda ok, confirmar de todos modos
-#lpop$conffaa[is.na(lpop$conffaa)] &lt;- 0 #FFAA
-#lpop$confpolicia[is.na(lpop$confpolicia)] &lt;- 0 #Policia
-#lpop$confjudicial[is.na(lpop$confjudicial)] &lt;- 0 #Judicial
-#lpop$confejecutivo[is.na(lpop$confejecutivo)] &lt;- 0 #Ejecutivo
-#lpop$confcongreso[is.na(lpop$confcongreso)] &lt;- 0 #Congreso
-#lpop$confpartidos[is.na(lpop$confpartidos)] &lt;- 0 #Partidos</code></pre>
+#2010
+freq(to_label(lpop$ingreso[lpop$year==2010 &amp; lpop$pais==&quot;MEX&quot;]))
+lpop$ingreso_r[lpop$year==2010 &amp; lpop$pais==&quot;MEX&quot;]&lt;- rec(lpop$ingreso,rec=&quot;1=400;2=1200;3=2000;4=2800;5=3600;6=4700;7=6100;8=8400;9=11750;10=13500;88=NA;98=NA&quot;)
+table(lpop$ingreso_r[lpop$year==2010 &amp; lpop$pais==&quot;MEX&quot;])
+summary(lpop$ingreso_r[lpop$year==2010 &amp; lpop$pais==&quot;MEX&quot;])
+
+#2012
+freq(to_label(lpop$ingreso[lpop$year==2012 &amp; lpop$pais==&quot;MEX&quot;]))
+lpop$ingreso_r[lpop$year==2012 &amp; lpop$pais==&quot;MEX&quot;]&lt;- rec(lpop$ingreso,rec=&quot;1=240;2=600;3=840;4=1200;5=1795;6=2510;7=3230;8=3950;9=5385;10=6820; 11=7895;12=9330;13=10770;14=12205;15=13640;16=14360;88=NA;98=NA&quot;)
+table(lpop$ingreso_r[lpop$year==2012 &amp; lpop$pais==&quot;MEX&quot;])
+summary(lpop$ingreso_r[lpop$year==2012 &amp; lpop$pais==&quot;MEX&quot;])
+
+#2014
+freq(to_label(lpop$ingreso[lpop$year==2014 &amp; lpop$pais==&quot;MEX&quot;]))
+lpop$ingreso_r[lpop$year==2014 &amp; lpop$pais==&quot;MEX&quot;]&lt;- rec(lpop$ingreso,rec=&quot;1=350;2=875;3=1275;4=1675;5=2025;6=2475;7=3000;8=3475;9=3900;10=4275; 11=4925;12=5925;13=6850;14=8000;15=9950;16=11150;88=NA;98=NA&quot;)
+table(lpop$ingreso_r[lpop$year==2014 &amp; lpop$pais==&quot;MEX&quot;])
+summary(lpop$ingreso_r[lpop$year==2014 &amp; lpop$pais==&quot;MEX&quot;])
+
+#Guatemala: cod. 2
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+
+#Salvador: cod. 3
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Honduras: cod. 4
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Nicaragua: cod. 5
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Costa Rica: cod. 6
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Panama: cod. 7
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Colombia: cod. 8
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Ecuador: cod. 9
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Bolivia: cod. 10
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Peru: cod. 11
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Paraguay: cod. 12
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Chile: cod. 13
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Uruguay: cod. 14
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Brasil: cod. 15
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Venezuela: cod. 16
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#Argentina: cod. 17
+#2008
+
+#2010
+
+#2012
+
+#2014
+
+#República Dominicana: cod. 18
+#2008
+
+#2010
+
+#2012
+
+#2014&quot;</code></pre>
+<ul>
+<li>Tiempo</li>
+</ul>
 <pre class="r"><code>#Dummy de tiempo
 #2008
 lpop$ano_2008 &lt;- 0
@@ -318,6 +514,9 @@ lpop$ano_2012[lpop$year==2012] &lt;- 1
 #2008
 lpop$ano_2014 &lt;- 0
 lpop$ano_2014[lpop$year==2014] &lt;- 1</code></pre>
+<ul>
+<li>Variable de nivel 2</li>
+</ul>
 <pre class="r"><code>#Merge Variables de nivel país (2)
 n2 &lt;- read_dta(&quot;N2.dta&quot;)
 n2=as.data.frame(n2) 
@@ -330,39 +529,39 @@ labels = c(&quot;MEX&quot;, &quot;GTM&quot;, &quot;SLV&quot;, &quot;HND&quot;, &
 #Año
 n2$year &lt;- as.factor(n2$year)
 #Fundir
-lpop &lt;- merge(lpop, n2, by=c(&quot;pais&quot;, &quot;year&quot;))</code></pre>
+lpop &lt;- merge(lpop, n2, by=c(&quot;pais&quot;, &quot;year&quot;))
+#Corregir variable de nivel 2 como factor 
+as.factor(lpop$redistribucion_r)</code></pre>
 <ul>
-<li>Base de datos transitoria</li>
+<li>Base de datos transitorias</li>
 </ul>
 <pre class="r"><code>#Bases de datos intermedias
 save(n2, file = &quot;n2.RData&quot;)
-save(lpop, file = &quot;lpop.RData&quot;) #Incluye variables de nivel 1 y 2
+save(wt, file = &quot;wt.RData&quot;) #Variable wt
 save(lp081, file = &quot;lpop08.RData&quot;)
 save(lp101, file = &quot;lpop10.RData&quot;)
 save(lp121, file = &quot;lpop12.RData&quot;)
 save(lp141, file = &quot;lpop14.RData&quot;)
-
-#Bases de datos final: Omitimos missing 
-save(lpop, file = &quot;lpop.RData&quot;)</code></pre>
+save(lpop, file = &quot;lpop.RData&quot;) #Incluye variables de nivel 1 y 2</code></pre>
 <ul>
-<li>Descriptivos de las variables de nivel 1</li>
+<li>Descriptivos de las variables de nivel 1 y nivel 2</li>
 </ul>
 <pre class="r"><code>load(&quot;lpop.RData&quot;)
 describe(lpop)</code></pre>
 <pre><code>## lpop 
 ## 
-##  56  Variables      119735  Observations
+##  63  Variables      119735  Observations
 ## ---------------------------------------------------------------------------
 ## pais 
 ##        n  missing distinct 
 ##   119735        0       18 
 ##                                                                       
 ## Value        MEX   GTM   SLV   HND   NIC   CRI   PAN   COL   ECU   BOL
-## Frequency   6217  6057  6108  6407  6312  6035  6200  6017  8989 12116
+## Frequency   6217  6057  6108  6407  6312  6035  6199  6017  8989 12118
 ## Proportion 0.052 0.051 0.051 0.054 0.053 0.050 0.052 0.050 0.075 0.101
 ##                                                           
 ## Value        PER   PRY   CHL   URY   BRA   VEN   ARG   DOM
-## Frequency   6000  5681  6634  6024  6979  6000  5920  6039
+## Frequency   6000  5681  6634  6024  6979  6000  5920  6038
 ## Proportion 0.050 0.047 0.055 0.050 0.058 0.050 0.049 0.050
 ## ---------------------------------------------------------------------------
 ## year : Año 
@@ -370,12 +569,60 @@ describe(lpop)</code></pre>
 ##   119735        0        4 
 ##                                   
 ## Value       2008  2010  2012  2014
-## Frequency  29934 31671 29256 28874
+## Frequency  29932 31671 29258 28874
 ## Proportion 0.250 0.265 0.244 0.241
+## ---------------------------------------------------------------------------
+## lpop$pais 
+##        n  missing distinct 
+##   119735        0       18 
+##                                                                       
+## Value        MEX   GTM   SLV   HND   NIC   CRI   PAN   COL   ECU   BOL
+## Frequency   6217  6057  6108  6407  6312  6035  6199  6017  8989 12118
+## Proportion 0.052 0.051 0.051 0.054 0.053 0.050 0.052 0.050 0.075 0.101
+##                                                           
+## Value        PER   PRY   CHL   URY   BRA   VEN   ARG   DOM
+## Frequency   6000  5681  6634  6024  6979  6000  5920  6038
+## Proportion 0.050 0.047 0.055 0.050 0.058 0.050 0.049 0.050
+## ---------------------------------------------------------------------------
+## lpop$year : Año 
+##        n  missing distinct 
+##   119735        0        4 
+##                                   
+## Value       2008  2010  2012  2014
+## Frequency  29932 31671 29258 28874
+## Proportion 0.250 0.265 0.244 0.241
+## ---------------------------------------------------------------------------
+## lpop$id 
+##        n  missing distinct     Info     Mean      Gmd      .05      .10 
+##   115135     4600    35781        1  3545158  5310300       90      211 
+##      .25      .50      .75      .90      .95 
+##      572     1187 14010094 14110605 14150275 
+##                                                                          
+## Value             0   200000   400000   600000   800000  1000000 14000000
+## Frequency     84331      540      380      420      350      240    13690
+## Proportion    0.732    0.005    0.003    0.004    0.003    0.002    0.119
+##                    
+## Value      14200000
+## Frequency     15184
+## Proportion    0.132
+## ---------------------------------------------------------------------------
+## id 
+##        n  missing distinct     Info     Mean      Gmd      .05      .10 
+##   115135     4600    35781        1  3545158  5310300       90      211 
+##      .25      .50      .75      .90      .95 
+##      572     1187 14010094 14110605 14150275 
+##                                                                          
+## Value             0   200000   400000   600000   800000  1000000 14000000
+## Frequency     84331      540      380      420      350      240    13690
+## Proportion    0.732    0.005    0.003    0.004    0.003    0.002    0.119
+##                    
+## Value      14200000
+## Frequency     15184
+## Proportion    0.132
 ## ---------------------------------------------------------------------------
 ## weight1500 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   119735        0     1116    0.991    0.902   0.2022   0.2375   0.4623 
+##   119735        0     1116    0.991    0.902   0.2022   0.2374   0.4600 
 ##      .25      .50      .75      .90      .95 
 ##   0.9615   0.9921   1.0000   1.0020   1.0094 
 ## 
@@ -387,17 +634,20 @@ describe(lpop)</code></pre>
 ##   116043     3692        7    0.894    5.681    1.661 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency   3640  2966  6224 12201 16918 21007 53087
+## Frequency   3640  2966  6224 12201 16919 21007 53086
 ## Proportion 0.031 0.026 0.054 0.105 0.146 0.181 0.457
 ## ---------------------------------------------------------------------------
 ## sexo 
-##        n  missing distinct     Info      Sum     Mean      Gmd 
-##   119734        1        2    0.749    58237   0.4864   0.4996 
-## 
+##        n  missing distinct 
+##   119734        1        2 
+##                         
+## Value       Mujer Hombre
+## Frequency   61497  58237
+## Proportion  0.514  0.486
 ## ---------------------------------------------------------------------------
 ## edad : ¿Cuál es su edad en años cumplidos? 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   118761      974       82        1    39.71    18.02       19       21 
+##   118761      974       82        1     39.7    18.02       19       21 
 ##      .25      .50      .75      .90      .95 
 ##       26       37       51       63       70 
 ## 
@@ -408,7 +658,7 @@ describe(lpop)</code></pre>
 ##   119161      574        7    0.905    2.234    1.278 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency  36608 45860 24252  2675  4252  5480    34
+## Frequency  36609 45859 24252  2675  4252  5480    34
 ## Proportion 0.307 0.385 0.204 0.022 0.036 0.046 0.000
 ## ---------------------------------------------------------------------------
 ## ideopolitica : Según el sentido que tengan para usted los términos &quot;izquierda&quot; y &quot;derecha&quot; cuan 
@@ -418,7 +668,7 @@ describe(lpop)</code></pre>
 ##        4        5        7       10       10 
 ##                                                                       
 ## Value          1     2     3     4     5     6     7     8     9    10
-## Frequency   8566  3642  7230  8454 24916 12729  7770  8397  4043 11006
+## Frequency   8566  3643  7230  8454 24914 12729  7770  8397  4044 11006
 ## Proportion 0.089 0.038 0.075 0.087 0.258 0.132 0.080 0.087 0.042 0.114
 ## ---------------------------------------------------------------------------
 ## sitlaboral : ¿A qué se dedica usted principalmente?¿Está ustede actualmente..? 
@@ -426,7 +676,7 @@ describe(lpop)</code></pre>
 ##   119425      310        7    0.851    2.754    2.118 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency  61579  4264  6895  9399 26470  7542  3276
+## Frequency  61579  4264  6894  9400 26470  7542  3276
 ## Proportion 0.516 0.036 0.058 0.079 0.222 0.063 0.027
 ## ---------------------------------------------------------------------------
 ## educacion : ¿Cuál fue el último año de enseñanza que aprobó? (Número de años de estudio) 
@@ -436,46 +686,53 @@ describe(lpop)</code></pre>
 ##        6       10       12       15       17 
 ##                                                                       
 ## Value          0     1     2     3     4     5     6     7     8     9
-## Frequency   4476  1919  3408  5112  4396  4791 14886  3995  5907  9505
+## Frequency   4476  1919  3408  5112  4396  4791 14886  3995  5908  9504
 ## Proportion 0.038 0.016 0.029 0.043 0.037 0.040 0.125 0.034 0.050 0.080
 ##                                                                 
 ## Value         10    11    12    13    14    15    16    17    18
-## Frequency   5821 12889 18505  3187  4301  4585  4405  3845  3208
+## Frequency   5821 12889 18505  3187  4301  4586  4404  3845  3208
 ## Proportion 0.049 0.108 0.155 0.027 0.036 0.038 0.037 0.032 0.027
 ## ---------------------------------------------------------------------------
 ## ingreso : ¿En cuál de los siguientes rangos se encuentran los ingresos familiares mensuale 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   103769    15966       17    0.992    6.023    4.372        1        2 
+##   103768    15967       17    0.992    6.023    4.372        1        2 
 ##      .25      .50      .75      .90      .95 
 ##        3        5        8       12       14 
 ##                                                                       
 ## Value          0     1     2     3     4     5     6     7     8     9
-## Frequency   1950  7007 10625 12609 12998 11341  8899  7030  5768  5122
+## Frequency   1950  7007 10625 12608 12998 11341  8899  7031  5767  5122
 ## Proportion 0.019 0.068 0.102 0.122 0.125 0.109 0.086 0.068 0.056 0.049
 ##                                                     
 ## Value         10    11    12    13    14    15    16
 ## Frequency   4558  3171  3416  2700  2340  1700  2535
 ## Proportion 0.044 0.031 0.033 0.026 0.023 0.016 0.024
 ## ---------------------------------------------------------------------------
-## zona : Ámbito 
-##        n  missing distinct     Info      Sum     Mean      Gmd 
-##   119735        0        2    0.625    84282   0.7039   0.4168 
-## 
+## zona 
+##        n  missing distinct 
+##   119735        0        2 
+##                         
+## Value       Rural Urbano
+## Frequency   35453  84282
+## Proportion  0.296  0.704
 ## ---------------------------------------------------------------------------
-## tamanociudad : Tamaño del lugar 
-##        n  missing distinct     Info     Mean      Gmd 
-##   119735        0        5    0.954    2.916    1.713 
-##                                         
-## Value          1     2     3     4     5
-## Frequency  33237 17779 20847 21546 26326
-## Proportion 0.278 0.148 0.174 0.180 0.220
+## tamanociudad 
+##        n  missing distinct 
+##   119735        0        5 
+##                                                              
+## Value            Área rural   Ciudad pequeña   Ciudad mediana
+## Frequency             33237            17779            20847
+## Proportion            0.278            0.148            0.174
+##                                             
+## Value         Ciudad grande Capital nacional
+## Frequency             21546            26326
+## Proportion            0.180            0.220
 ## ---------------------------------------------------------------------------
 ## conffaa : ¿Hasta qué punto tiene confianza usted en las Fuerzas Armadas? 
 ##        n  missing distinct     Info     Mean      Gmd 
-##   104155    15580        7    0.973    4.572    2.104 
+##   104156    15579        7    0.973    4.572    2.104 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency   9838  6976 11981 17502 20575 17413 19870
+## Frequency   9838  6976 11981 17502 20576 17413 19870
 ## Proportion 0.094 0.067 0.115 0.168 0.198 0.167 0.191
 ## ---------------------------------------------------------------------------
 ## confpolicia : ¿Hasta qué punto tiene confianza usted en la Policía Nacional? 
@@ -483,7 +740,7 @@ describe(lpop)</code></pre>
 ##   118405     1330        7    0.976    3.776    2.131 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency  19625 13688 19007 22142 20344 12416 11183
+## Frequency  19625 13688 19008 22142 20343 12416 11183
 ## Proportion 0.166 0.116 0.161 0.187 0.172 0.105 0.094
 ## ---------------------------------------------------------------------------
 ## confjudicial : ¿Hasta qué punto tiene confianza en el sistema de justicia? 
@@ -491,7 +748,7 @@ describe(lpop)</code></pre>
 ##   117026     2709        7    0.973    3.674    1.998 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency  18079 14151 21307 24596 20302 10404  8187
+## Frequency  18079 14150 21307 24598 20301 10404  8187
 ## Proportion 0.154 0.121 0.182 0.210 0.173 0.089 0.070
 ## ---------------------------------------------------------------------------
 ## confejecutivo : ¿Hasta qué punto tiene confianza usted en el presidente? 
@@ -499,7 +756,7 @@ describe(lpop)</code></pre>
 ##   117823     1912        7    0.977     4.15    2.314 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency  20001  9424 13744 19138 20150 16024 19342
+## Frequency  20001  9423 13744 19139 20149 16024 19343
 ## Proportion 0.170 0.080 0.117 0.162 0.171 0.136 0.164
 ## ---------------------------------------------------------------------------
 ## confcongreso : ¿Hasta qué punto tiene confianza usted en el Congreso Nacional? 
@@ -507,7 +764,7 @@ describe(lpop)</code></pre>
 ##   114418     5317        7    0.973    3.627    2.046 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency  20450 13081 19412 23436 19710 10482  7847
+## Frequency  20450 13080 19412 23437 19710 10482  7847
 ## Proportion 0.179 0.114 0.170 0.205 0.172 0.092 0.069
 ## ---------------------------------------------------------------------------
 ## confpartidos : ¿Hasta qué punto tiene confianza usted en los partidos políticos? 
@@ -515,15 +772,32 @@ describe(lpop)</code></pre>
 ##   117012     2723        7     0.96    3.017    1.939 
 ##                                                     
 ## Value          1     2     3     4     5     6     7
-## Frequency  33374 16534 21281 21024 14503  5964  4332
+## Frequency  33375 16534 21280 21024 14503  5964  4332
 ## Proportion 0.285 0.141 0.182 0.180 0.124 0.051 0.037
+## ---------------------------------------------------------------------------
+## hijos : ¿Cuántos hijos(as) tiene? 
+##        n  missing distinct     Info     Mean      Gmd      .05      .10 
+##   118506     1229       26    0.965    2.247    2.308        0        0 
+##      .25      .50      .75      .90      .95 
+##        0        2        3        5        6 
+## 
+## lowest :  0  1  2  3  4, highest: 21 22 23 24 25
+## ---------------------------------------------------------------------------
+## wt 
+##        n  missing distinct     Info     Mean      Gmd      .05      .10 
+##   112433     7302     1082    0.616        1   0.2382   0.4510   0.6694 
+##      .25      .50      .75      .90      .95 
+##   1.0000   1.0000   1.0000   1.0667   1.5442 
+## 
+## lowest : 0.02936622 0.03283781 0.03753124 0.03915738 0.04880410
+## highest: 5.85295248 6.19348764 6.29648495 8.11350346 8.28871059
 ## ---------------------------------------------------------------------------
 ## wave 
 ##        n  missing distinct     Info     Mean      Gmd 
 ##   119735        0        4    0.937    10.95    2.481 
 ##                                   
 ## Value          8    10    12    14
-## Frequency  29934 31671 29256 28874
+## Frequency  29932 31671 29258 28874
 ## Proportion 0.250 0.265 0.244 0.241
 ## ---------------------------------------------------------------------------
 ## pais_wave 
@@ -534,7 +808,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## redistribucion_r 
 ##        n  missing distinct     Info      Sum     Mean      Gmd 
-##   116043     3692        2    0.745    53087   0.4575   0.4964 
+##   116043     3692        2    0.745    53086   0.4575   0.4964 
 ## 
 ## ---------------------------------------------------------------------------
 ## redistribucion_ln : ¿Hasta qué punto está de acuerdo con que el Estado (país) debe implementar polít 
@@ -542,11 +816,11 @@ describe(lpop)</code></pre>
 ##   116043     3692        7    0.894    1.672   0.3784 
 ##                                                                       
 ## Value      0.0000000 0.6931472 1.0986123 1.3862944 1.6094379 1.7917595
-## Frequency       3640      2966      6224     12201     16918     21007
+## Frequency       3640      2966      6224     12201     16919     21007
 ## Proportion     0.031     0.026     0.054     0.105     0.146     0.181
 ##                     
 ## Value      1.9459101
-## Frequency      53087
+## Frequency      53086
 ## Proportion     0.457
 ## ---------------------------------------------------------------------------
 ## edad2 : ¿Cuál es su edad en años cumplidos? 
@@ -558,9 +832,12 @@ describe(lpop)</code></pre>
 ## lowest :   324   361   400   441   484, highest:  9025  9216  9604  9801 10201
 ## ---------------------------------------------------------------------------
 ## ecivil_r 
-##        n  missing distinct     Info      Sum     Mean      Gmd 
-##   119161      574        2    0.726    70146   0.5887   0.4843 
-## 
+##        n  missing distinct 
+##   119161      574        2 
+##                           
+## Value      Soltero  Casado
+## Frequency    49016   70145
+## Proportion   0.411   0.589
 ## ---------------------------------------------------------------------------
 ## izquierda : Según el sentido que tengan para usted los términos &quot;izquierda&quot; y &quot;derecha&quot; cuan 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
@@ -569,32 +846,32 @@ describe(lpop)</code></pre>
 ##        4        6        7        9       10 
 ##                                                                       
 ## Value          1     2     3     4     5     6     7     8     9    10
-## Frequency  11006  4043  8397  7770 12729 24916  8454  7230  3642  8566
+## Frequency  11006  4044  8397  7770 12729 24914  8454  7230  3643  8566
 ## Proportion 0.114 0.042 0.087 0.080 0.132 0.258 0.087 0.075 0.038 0.089
 ## ---------------------------------------------------------------------------
 ## ideopolitica_f 
-##        n  missing distinct     Info     Mean      Gmd 
-##    96753    22982        3    0.884    1.966   0.8474 
-##                             
-## Value          1     2     3
-## Frequency  31216 37645 27892
-## Proportion 0.323 0.389 0.288
+##        n  missing distinct 
+##    96753    22982        3 
+##                                         
+## Value        Derecha    Centro Izquierda
+## Frequency      31217     37643     27893
+## Proportion     0.323     0.389     0.288
 ## ---------------------------------------------------------------------------
 ## sitlaboral_r 
-##        n  missing distinct     Info     Mean      Gmd 
-##   119425      310        3    0.801    2.409   0.7382 
-##                             
-## Value          1     2     3
-## Frequency  16941 36641 65843
-## Proportion 0.142 0.307 0.551
+##        n  missing distinct 
+##   119425      310        3 
+##                                                                 
+## Value      No fuerza laboral       Desempleado          Empleado
+## Frequency              16942             36640             65843
+## Proportion             0.142             0.307             0.551
 ## ---------------------------------------------------------------------------
 ## educacion_r 
-##        n  missing distinct     Info     Mean      Gmd 
-##   119141      594        3     0.85     1.87   0.7573 
-##                             
-## Value          1     2     3
-## Frequency  38988 56622 23531
-## Proportion 0.327 0.475 0.198
+##        n  missing distinct 
+##   119141      594        3 
+##                                            
+## Value        Primaria Secundaria  Terciaria
+## Frequency       38988      56622      23531
+## Proportion      0.327      0.475      0.198
 ## ---------------------------------------------------------------------------
 ## tamano : Tamaño del lugar 
 ##        n  missing distinct     Info     Mean      Gmd 
@@ -613,9 +890,17 @@ describe(lpop)</code></pre>
 ## lowest : 1.000000 1.166667 1.200000 1.250000 1.333333
 ## highest: 6.666667 6.750000 6.800000 6.833333 7.000000
 ## ---------------------------------------------------------------------------
+## ingreso_r 
+##        n  missing distinct     Info     Mean      Gmd      .05      .10 
+##     5310   114425       29    0.996     2902     2407      400      600 
+##      .25      .50      .75      .90      .95 
+##     1200     2025     3600     6100     8400 
+## 
+## lowest :   240   350   400   600   840, highest:  6100  6820  8400 11750 13500
+## ---------------------------------------------------------------------------
 ## ano_2008 
 ##        n  missing distinct     Info      Sum     Mean      Gmd 
-##   119735        0        2    0.563    29934     0.25    0.375 
+##   119735        0        2    0.562    29932     0.25    0.375 
 ## 
 ## ---------------------------------------------------------------------------
 ## ano_2010 
@@ -625,7 +910,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## ano_2012 
 ##        n  missing distinct     Info      Sum     Mean      Gmd 
-##   119735        0        2    0.554    29256   0.2443   0.3693 
+##   119735        0        2    0.554    29258   0.2444   0.3693 
 ## 
 ## ---------------------------------------------------------------------------
 ## ano_2014 
@@ -637,12 +922,12 @@ describe(lpop)</code></pre>
 ##        n  missing distinct 
 ##   119735        0       18 
 ## 
-## Argentina (5920, 0.049), Bolivia (12116, 0.101), Brasil (6979, 0.058),
+## Argentina (5920, 0.049), Bolivia (12118, 0.101), Brasil (6979, 0.058),
 ## Chile (6634, 0.055), Colombia (6017, 0.050), Costa Rica (6035, 0.050),
 ## Ecuador (8989, 0.075), El Salvador (6108, 0.051), Guatemala (6057, 0.051),
 ## Honduras (6407, 0.054), México (6217, 0.052), Nicaragua (6312, 0.053),
-## Panamá (6200, 0.052), Paraguay (5681, 0.047), Perú (6000, 0.050),
-## República Dominicana (6039, 0.050), Uruguay (6024, 0.050), Venezuela
+## Panamá (6199, 0.052), Paraguay (5681, 0.047), Perú (6000, 0.050),
+## República Dominicana (6038, 0.050), Uruguay (6024, 0.050), Venezuela
 ## (6000, 0.050)
 ## ---------------------------------------------------------------------------
 ## gini 
@@ -664,7 +949,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## gsocial 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   104321    15414       63        1    13.41    5.976    6.987    7.558 
+##   104321    15414       63        1    13.41    5.975    6.987    7.558 
 ##      .25      .50      .75      .90      .95 
 ##    9.267   11.761   15.182   23.294   24.614 
 ## 
@@ -673,7 +958,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## desempleo 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   119735        0       53    0.999    6.564    2.018    3.500    4.100 
+##   119735        0       53    0.999    6.563    2.018    3.500    4.100 
 ##      .25      .50      .75      .90      .95 
 ##    5.100    6.742    7.800    8.400    9.800 
 ## 
@@ -694,7 +979,7 @@ describe(lpop)</code></pre>
 ##   119735        0        3 
 ##                                                                 
 ## Value      Informal familiar     Productivista    Proteccionista
-## Frequency              75726             12554             31455
+## Frequency              75727             12554             31454
 ## Proportion             0.632             0.105             0.263
 ## ---------------------------------------------------------------------------
 ## bienestar1 
@@ -702,11 +987,11 @@ describe(lpop)</code></pre>
 ##   119735        0        4 
 ##                                                                       
 ## Value      Informal familiar A Informal familiar B       Productivista
-## Frequency                45210               30516               12554
+## Frequency                45209               30518               12554
 ## Proportion               0.378               0.255               0.105
 ##                               
 ## Value           Proteccionista
-## Frequency                31455
+## Frequency                31454
 ## Proportion               0.263
 ## ---------------------------------------------------------------------------
 ## div_etnica 
@@ -783,7 +1068,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## gini_dif 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   119735        0       66        1  0.05719    2.027   -2.725   -2.300 
+##   119735        0       66        1  0.05711    2.027   -2.725   -2.300 
 ##      .25      .50      .75      .90      .95 
 ##   -1.425    0.050    1.150    2.246    2.675 
 ## 
@@ -792,7 +1077,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## pib_dif 
 ##         n   missing  distinct      Info      Mean       Gmd       .05 
-##    119735         0        72         1 -0.009585    0.5099  -0.87272 
+##    119735         0        72         1 -0.009571    0.5099  -0.87272 
 ##       .10       .25       .50       .75       .90       .95 
 ##  -0.54673  -0.26793  -0.04485   0.23372   0.56454   0.69652 
 ## 
@@ -801,7 +1086,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## gsocial_dif 
 ##          n    missing   distinct       Info       Mean        Gmd 
-##     104321      15414         63          1 -0.0009394      1.033 
+##     104321      15414         63          1 -0.0009474      1.033 
 ##        .05        .10        .25        .50        .75        .90 
 ##   -1.50630   -1.06179   -0.49197    0.02632    0.55845    1.03486 
 ##        .95 
@@ -812,7 +1097,7 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## desempleo_dif 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   119735        0       67        1  0.02344   0.9754  -1.2267  -1.0250 
+##   119735        0       67        1  0.02343   0.9754  -1.2267  -1.0250 
 ##      .25      .50      .75      .90      .95 
 ##  -0.6500   0.1396   0.6500   1.1500   1.4750 
 ## 
@@ -821,16 +1106,13 @@ describe(lpop)</code></pre>
 ## ---------------------------------------------------------------------------
 ## informal_dif 
 ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-##   107423    12312       64        1  0.02414    1.661 -2.40747 -1.68589 
+##   107423    12312       64        1   0.0241    1.661 -2.40747 -1.68589 
 ##      .25      .50      .75      .90      .95 
 ## -0.99002 -0.01546  1.08940  1.73987  2.24241 
 ## 
 ## lowest : -4.440391 -3.659827 -2.913100 -2.407468 -2.354245
 ## highest:  2.045168  2.242408  3.024945  3.063374  3.498809
 ## ---------------------------------------------------------------------------</code></pre>
-<ul>
-<li>Modelos</li>
-</ul>
 
 
 
