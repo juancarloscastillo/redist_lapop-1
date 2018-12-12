@@ -1,5 +1,5 @@
 ---
-title: 'Documento de cÃ³digo: Preferencias redistributivas en contextos desiguales'
+title: 'Documento de código: Preferencias redistributivas en contextos desiguales'
 author: "Gonzalo Franetovic"
 date: "22/10/2018"
 output:
@@ -11,22 +11,20 @@ output:
  
 + Instalación Paquetes de trabajo
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
+```{r Paquetes, echo=TRUE, message=FALSE, warning=FALSE}
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(car, stargazer, haven, foreign, stargazer, xtable, psych, psy, base, magrittr, readxl, lme4, texreg, varhandle, countrycode, laeken, multilevel, ggplot2, ggthemes, extrafont, plyr, data.table, doBy, multiwayvcov, miceadds, RColorBrewer, scales, haven, margins, grDevices, interplot, lmtest, lsmeans, lattice, broom, sjPlot, lmerTest, labelled, dplyr, sjmisc, tidyverse, Hmisc, devtools, DescTools, descr)
 search()
-
-
 ```
 
 + Lectura de bases de datos LAPOP 2008, 2010, 2012, 2014 y transformación a dataframe.
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Bases, echo=TRUE, message=FALSE, warning=FALSE}
 #Directorio y bases de datos
-lp08 <- read_dta("2008.dta")
-lp10 <- read_dta("2010.dta")
-lp12 <- read_dta("2012.dta")
-lp14 <- read_dta("2014.dta")
+lp08 <- read_dta("Bases/OriginalLapop/2008.dta")
+lp10 <- read_dta("Bases/OriginalLapop/2010.dta")
+lp12 <- read_dta("Bases/OriginalLapop/2012.dta")
+lp14 <- read_dta("Bases/OriginalLapop/2014.dta")
 #Transformación a Data Frame 
 lp08=as.data.frame(lp08) 
 lp10=as.data.frame(lp10)
@@ -41,7 +39,7 @@ names(lp14)= tolower(names(lp14))
 
 + Exploración y fundición de la bases de datos 
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Fundir bases, echo=TRUE, message=FALSE, warning=FALSE}
 #Revisamos los primeros casos
 head (lp08)
 head (lp10)
@@ -73,7 +71,7 @@ lpop <- lpop[order(lpop$pais), ]
  
 + Selección e identificación de los países de la muestra
  
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Muestra de paises, echo=TRUE, message=FALSE, warning=FALSE}
 #Removemos los países que no vamos a considerar en la muestra
 lpop<-lpop[!(lpop$pais>21),]
 lpop$pais[lpop$pais==21] <- "18"
@@ -87,9 +85,9 @@ describe(lpop$year)
  
 + Imputamos variable "WT" (Peso País) desde base externa para posterior ponderación de las bases de datos individuales de los países
  
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Base wt, echo=TRUE, message=FALSE, warning=FALSE}
 #Importamos base de datos externa
-wt <- read_dta("wt.dta")
+wt <- read_dta("Bases/wt.dta")
 wt=as.data.frame(wt) #Transformamos a data frame
 colnames(wt) <- c("pais", "year", "id", "wt")
 #Removemos los países y olas que no vamos a considerar en la muestra
@@ -113,7 +111,7 @@ table(lpop$pais, lpop$year)
  
 + Variables de nivel individual
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Variables Niv 1, echo=TRUE, message=FALSE, warning=FALSE} 
 #Olas: 
 lpop$wave <- lpop$year
 lpop$wave=rec(lpop$wave, rec=c("2008=08", "2010=10", "2012=12", "2014=14"))
@@ -125,7 +123,7 @@ lpop$pais_wave <- do.call(paste, c(lpop[c("pais", "wave")], sep = "_"))
 #Redistribución:
 # Dummy
 lpop$redistribucion_r <-as.numeric(lpop$redistribucion >= 7)
-as.factor(lpop$redistribucion_r)
+lpop$redistribucion_r <-as.factor(lpop$redistribucion_r)
 
 # Log Natural
 lpop$redistribucion_ln <- log(lpop$redistribucion)
@@ -199,7 +197,7 @@ describe(lpop$nhogar)
 
 + Variable ingreso
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Variable ingreso, echo=TRUE, message=FALSE, warning=FALSE}
 #Ingreso: Se imputa el punto medio del rango para cada atributo de la respuesta, según la escala de cada país (tipo de moneda). Luego se obtiene el ingreso per cápita se transforma a logaritmo y se transforma a quintiles y deciles.
 
 #Mexico: cod. 1
@@ -671,22 +669,43 @@ lpop$ingreso_r[lpop$year==2014 & lpop$pais=="DOM"]<- rec(lpop$ingreso,rec="1=140
 table(lpop$ingreso_r[lpop$year==2014 & lpop$pais=="DOM"])
 summary(lpop$ingreso_r[lpop$year==2014 & lpop$pais=="DOM"])
 
+#Ingreso punto medio
+freq(lpop$ingreso_r)
+
 #Ingreso per cápita
 lpop$ingreso_pc=lpop$ingreso_r/lpop$nhogar
 lpop$ingreso_pc=log(lpop$ingreso_pc) #Logaritmo del ingreso per cápita
+freq(lpop$ingreso_pc)
 
 #Quintiles de ingreso
-lpop %>% mutate(quintil=ntile(lpop$ingreso_pc,5)) -> lpop
+lpop = 
+  lpop %>% 
+  group_by(pais, year) %>%
+  mutate(quintil=ntile(ingreso_pc,5))
 freq(lpop$quintil)
+#México a modo de ejemplo
+freq(lpop$quintil[lpop$pais=="MEX" & lpop$year==2008])
+freq(lpop$quintil[lpop$pais=="MEX" & lpop$year==2010])
+freq(lpop$quintil[lpop$pais=="MEX" & lpop$year==2012])
+freq(lpop$quintil[lpop$pais=="MEX" & lpop$year==2014])
 
 #Deciles de ingreso
-lpop %>% mutate(decil=ntile(lpop$ingreso_pc,10)) -> lpop
+lpop = 
+  lpop %>% 
+  group_by(pais, year) %>%
+  mutate(decil=ntile(ingreso_pc,10))
 freq(lpop$decil)
+#México a modo de ejemplo
+freq(lpop$decil[lpop$pais=="MEX" & lpop$year==2008])
+freq(lpop$decil[lpop$pais=="MEX" & lpop$year==2010])
+freq(lpop$decil[lpop$pais=="MEX" & lpop$year==2012])
+freq(lpop$decil[lpop$pais=="MEX" & lpop$year==2014])
+
 ```
 
-+ Tiempo
++ Variable de Tiempo
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Tiempo, echo=TRUE, message=FALSE, warning=FALSE}
 #Dummy de tiempo
 #2008
 lpop$ano_2008 <- 0
@@ -704,9 +723,9 @@ lpop$ano_2014[lpop$year==2014] <- 1
 
 + Variable de nivel 2
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, echo=TRUE} 
+```{r Variables Niv 2, echo=TRUE, message=FALSE, warning=FALSE}
 #Merge Variables de nivel país (2)
-n2 <- read_dta("N2.dta")
+n2 <- read_dta("Bases/N2.dta")
 n2=as.data.frame(n2) 
 names(n2)= tolower(names(n2)) 
 colnames(n2) <- c("pais", "year", "pais_nombre", "gini","pib", "gsocial", "desempleo", "informal", "bienestar", "bienestar1", "div_etnica", "div_religion", "div_lenguaje", "gini_mean", "pib_mean", "gsocial_mean", "desempleo_mean", "informal_mean", "gini_dif", "pib_dif", "gsocial_dif", "desempleo_dif", "informal_dif" )
@@ -737,7 +756,7 @@ save(lpop, file = "lpop.RData") #Incluye variables de nivel 1 y 2
 
 + Descriptivos de las variables de nivel 1 y nivel 2
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE}
+```{r Base y descriptivos, echo=TRUE, message=FALSE, warning=FALSE}
 load("lpop.RData") #Cargamos la base
 lpop <- lpop[order(lpop$pais), ] #Ordenamos la base de datos
 save(lpop, file = "lpop.RData") #Guardamos la base de datos
