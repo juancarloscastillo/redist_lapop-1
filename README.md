@@ -567,7 +567,7 @@ summary(lpop$ingreso_r[lpop$year==2014 & lpop$pais=="URY"])
 #Brasil: cod. 15
 #2008
 freq(to_label(lpop$ingreso[lpop$year==2008 & lpop$pais=="BRA"]))
-lpop$ingreso_r[lpop$year==2008 & lpop$pais=="BREA"]<- rec(lpop$ingreso,rec="1=19000;2=57001;3=95001;4=152001;5=228001;6=285001;7=380001;8=513001;9=665001;10=760001;88=NA;98=NA")
+lpop$ingreso_r[lpop$year==2008 & lpop$pais=="BRA"]<- rec(lpop$ingreso,rec="1=19000;2=57001;3=95001;4=152001;5=228001;6=285001;7=380001;8=513001;9=665001;10=760001;88=NA;98=NA")
 table(lpop$ingreso_r[lpop$year==2008 & lpop$pais=="BRA"])
 summary(lpop$ingreso_r[lpop$year==2008 & lpop$pais=="BRA"])
 
@@ -757,9 +757,10 @@ save(lpop, file = "lpop.RData") #Incluye variables de nivel 1 y 2
 + Descriptivos de las variables de nivel 1 y nivel 2
 
 ```{r Base y descriptivos, echo=TRUE, message=FALSE, warning=FALSE}
-load("lpop.RData") #Cargamos la base
+lpop=as.data.frame(lpop) #Base en data frame 
 lpop <- lpop[order(lpop$pais), ] #Ordenamos la base de datos
 save(lpop, file = "lpop.RData") #Guardamos la base de datos
+load("lpop.RData") #Cargamos la base
 describe(lpop) #Estadísticos descriptivos de todas las variables 
 ```
 
