@@ -764,3 +764,5 @@ load("lpop.RData") #Cargamos la base
 describe(lpop) #Estadísticos descriptivos de todas las variables 
 ```
 
+
++ 
