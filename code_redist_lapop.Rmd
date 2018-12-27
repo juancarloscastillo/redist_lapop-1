@@ -743,7 +743,7 @@ as.factor(lpop$redistribucion_r)
 
 + Base de datos transitorias
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+```{r Save Data, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
 #Bases de datos intermedias
 save(n2, file = "n2.RData")
 save(wt, file = "wt.RData") #Variable wt
@@ -764,5 +764,56 @@ load("lpop.RData") #Cargamos la base
 describe(lpop) #Estadísticos descriptivos de todas las variables 
 ```
 
++ Missing  
 
-+ 
+```{r Missing Data, echo=TRUE, message=FALSE, warning=FALSE}
+#Listwise variables N1
+lapop = na.omit(lpop)
+lapop = lpop[complete.cases(lpop$redistribucion, lpop$sexo, lpop$edad, lpop$ecivil, 
+                              lpop$izquierda, lpop$ideopolitica_f, lpop$sitlaboral, 
+                              lpop$educacion, lpop$decil, lpop$zona,lpop$confianza),]
+
+lapop2 = complete.cases(lpop)
+lapop2=as.data.frame(lapop2)
+
+rm(lapop)
+rm(lapop2)
+```
+
+```{r}
+#Revisión de valores missing variables conflictivas
+describe(lpop)
+
+#Variable wt
+lpop$wt_m <- lpop$wt
+lpop$wt_m <- ifelse(is.na(lpop$wt_m), 1, 0)
+lpop$wt_m <-as.factor(lpop$wt_m)
+describe(lpop$wt)
+describe(lpop$wt_m)
+table1 <- xtabs(~wt_m+pais+wave, data=lpop)
+table1
+
+#Variable ingreso_pc
+lpop$ingreso_pc_m <- lpop$ingreso_pc
+lpop$ingreso_pc_m <- ifelse(is.na(lpop$ingreso_pc_m), 1, 0)
+lpop$ingreso_pc_m <- as.factor(lpop$ingreso_pc_m)
+describe(lpop$ingreso_pc_m)
+describe(lpop$ingreso_pc_m)
+table2 <- xtabs(~ingreso_pc_m+pais+wave, data=lpop)
+table2
+
+#Variable ideología política
+lpop$ideopolitica_f_m <- lpop$ideopolitica_f
+lpop$ideopolitica_f_m <- ifelse(is.na(lpop$ideopolitica_f_m), 1, 0)
+lpop$wt_m <-as.factor(lpop$ideopolitica_f_m)
+describe(lpop$ideopolitica_f)
+describe(lpop$ideopolitica_f_m)
+table3 <- xtabs(~lpop$ideopolitica_f_m+pais+wave, data=lpop)
+table3
+
+#Tablas con la frecuencia de los missing
+ftable(table1) 
+ftable(table2)
+ftable(table3)
+```
+
