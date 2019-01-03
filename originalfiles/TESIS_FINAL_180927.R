@@ -73,7 +73,7 @@ attach(lapop)
 ######################## TABLAS Y FIGURAS  ####################### ----
 
 
-###TABLA 1: ESTADÍSTICOS DESCRIPTIVOS ----
+###TABLA 1: ESTAD?STICOS DESCRIPTIVOS ----
 
 ##Nivel 1
 redistribucion_n = as.numeric(lapop$ros4)
@@ -91,8 +91,8 @@ nivel1 = as.data.frame(cbind(redistribucion_n,
                              ingreso5_n, sitlaboral_n, educacion_n, 
                              izquierda_n, confianza_n,
                              hombre_n, edad_n, casado_n, urbano_n))
-colnames(nivel1) <- c("Acuerdo con redistribución", 
-                      "Ingreso", "Situación laboral", "Educación", 
+colnames(nivel1) <- c("Acuerdo con redistribuci?n", 
+                      "Ingreso", "Situaci?n laboral", "Educaci?n", 
                       "Izquierda", "Confianza en el sistema",
                       "Hombre", "Edad", "Casado", "Urbano" )
 
@@ -111,14 +111,14 @@ nivel2a = as.data.frame(cbind(holahola, lapop_pais$Group.2,
                              lapop_pais$gini_mean, lapop_pais$gini_dif,
                              lapop_pais$pib_mean, lapop_pais$pib_dif))
 
-colnames(nivel2a) <- c("País", "Año", "Gini [BE]", "Gini [WE]",
-                      "PÍB [BE]", "PIB [WE]")
+colnames(nivel2a) <- c("Pa?s", "A?o", "Gini [BE]", "Gini [WE]",
+                      "P?B [BE]", "PIB [WE]")
 
 nivel2 = as.data.frame(cbind(lapop_pais$gini_mean, lapop_pais$gini_dif,
                               lapop_pais$pib_mean, lapop_pais$pib_dif))
 
 colnames(nivel2) <- c("Gini [BE]", "Gini [WE]",
-                       "PÍB [BE]", "PIB [WE]")
+                       "P?B [BE]", "PIB [WE]")
 
 stargazer(nivel2)
 
@@ -127,7 +127,7 @@ cor2latex(nivel2, stars=TRUE)
 
 
 
-###FIGURA 2: ROS4 / PAÍSES ----
+###FIGURA 2: ROS4 / PA?SES ----
 
 charts.data1 <- read.csv("G1.csv", sep=";")
 colnames(charts.data1) <- c("pais1", "pais", "porcen", "ros4", "orden")
@@ -135,7 +135,7 @@ sapply(charts.data1, class)
 charts.data1$ros4 = as.factor(charts.data1$ros4)
 charts.data1$ros4 <- factor(charts.data1$ros4, levels = c("7","6","5","4","3","2","1"))
 charts.data1$ros4 <- factor(charts.data1$ros4, levels = c("1","2","3","4","5","6","7"))
-charts.data1 = ddply(charts.data1, .(orden),
+charts.data1 = (charts.data1, .(orden),
                     transform, pos = cumsum(porcen) - (0.5 * porcen))
 charts.data1$pos1= 100 - charts.data1$pos
 
@@ -160,7 +160,7 @@ g1c = ggplot(data = charts.data1, aes(x=reorder(pais1, orden), y = porcen, fill 
         strip.text=element_text(size=12))
 g1c
 
-###FIGURA 3: ROS4 / PAISES / AÑOS ----
+###FIGURA 3: ROS4 / PAISES / A?OS ----
 
 lapop$ros4a=as.integer(lapop$ros4)
 
@@ -168,8 +168,8 @@ g2 = ggplot(lapop, aes(x= ros4a,  colour=wave1)) +
   geom_line(aes(y = ..prop.., fill = factor(..x..)), stat="count", binwidth = 1, size = 1) +
   facet_wrap(~pais, ncol=3) +
   xlim(1, 7) +
-  labs(x = "Acuerdo con Redistribución", y = "", fill="") +
-  scale_color_grey(start=0.8, end=0.2, name="Año") +  
+  labs(x = "Acuerdo con Redistribuci?n", y = "", fill="") +
+  scale_color_grey(start=0.8, end=0.2, name="A?o") +  
   scale_y_continuous(labels = scales::percent) +
   scale_x_continuous(breaks = c(1:7)) +
   theme(axis.text=element_text(size=15),
@@ -186,9 +186,9 @@ g2
 g2c= ggplot(lapop, aes(x= ros4a,  colour=wave1)) + 
   geom_freqpoly(aes(y = ..prop.., fill = factor(..x..)), stat="count", binwidth = 1, size = 1) +
   xlim(1, 7) +
-  labs(x = "Acuerdo con Redistribución", y = "", fill="") +
+  labs(x = "Acuerdo con Redistribuci?n", y = "", fill="") +
   facet_wrap(~pais, ncol=3) +
-  scale_colour_brewer(name = "Año", palette="Spectral") +
+  scale_colour_brewer(name = "A?o", palette="Spectral") +
   scale_y_continuous(labels = scales::percent) +
   scale_x_continuous(breaks = c(1:7)) +
   theme(axis.text=element_text(size=15),
@@ -204,7 +204,7 @@ g2c
 
 ###TABLA 2: ROS4 / INGRESO ----
 
-#Promedios por País/Año: Ros4, Gini, Ingreso
+#Promedios por Pa?s/A?o: Ros4, Gini, Ingreso
 ros4_pais=as.data.frame(tapply(lapop$ros4, lapop$pais, mean))
 ros4_paisano = with(lapop, tapply(ros4, list(pais, wave1), mean))
 
@@ -236,13 +236,13 @@ ros4_ingreso_total
 
 
 
-######################## ESTIMACIÓN MULTINIVEL #######################----
+######################## ESTIMACI?N MULTINIVEL #######################----
 
 sapply(lapop, class)
 
 ###0. MODELO NULO - ICC
 
-#Pais año (SIN FE AÑO)
+#Pais a?o (SIN FE A?O)
 modelo_0 = lmer(ros4 ~ 1 + (1 | pais_ano) + (1 | pais)) 
 summary(modelo_0)
 varcomp=as.data.frame(VarCorr(modelo_0))
@@ -334,6 +334,7 @@ modelo_8 = lmer(ros4 ~ 1 + ingreso5_r + hombre + edad
                 + ingreso5_r*pib_mean + ingreso5_r*pib_dif
                 + (1 + ingreso5_r | pais_ano) + (1 + ingreso5_r | pais))
 
+#Revisar comando con los ponderadores waves. 
 
 texreg(list(modelo_0,modelo_1, modelo_2, modelo_3, modelo_4, 
             modelo_5, modelo_6, modelo_7, modelo_8), 
@@ -350,7 +351,7 @@ lrtest (modelo_4, modelo_6)
 lrtest (modelo_6, modelo_7)
 lrtest (modelo_7, modelo_8)
 
-#Gráfico
+#Gr?fico
 
 coef_mod = as.data.frame(tidy(modelo_1, conf.int = TRUE))
 coef
@@ -358,7 +359,7 @@ coef
 ggplot(coef_mod, aes(term, estimate))+
   geom_point()+
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high))+
-  labs(title = "Coeficientes de un modelo de regresión OLS")
+  labs(title = "Coeficientes de un modelo de regresi?n OLS")
 
 cplot_modelo1 = coefplot(modelo_1)
 
@@ -375,7 +376,7 @@ plot_model(modelo_6,
            y.offset = .4,
            value.offset = .4,
            value.size = 3.5,
-           title="Efecto aleatorio de Ingreso sobre Acuerdo con Redistribución por país: intercepto y pendiente")
+           title="Efecto aleatorio de Ingreso sobre Acuerdo con Redistribuci?n por pa?s: intercepto y pendiente")
 
 ranef(modelo_6)
 
@@ -386,7 +387,7 @@ ranef(modelo_6)
 
 em_ing_ginibe1 = interplot(m = modelo_7, var1 = 'ingreso5_r', var2 = 'gini_mean', ci = 0.90) + 
   xlab("Gini (Promedio)") +
-  ylab("Cambio en Acuerdo con Redistribución") +
+  ylab("Cambio en Acuerdo con Redistribuci?n") +
   geom_hline(yintercept = 0, linetype = "dashed") +
   theme(axis.text=element_text(size=11),
         axis.title.y = element_text(size =12),
@@ -395,7 +396,7 @@ em_ing_ginibe1
 
 em_ing_giniwe1 = interplot(m = modelo_7, var1 = 'ingreso5_r', var2 = 'gini_dif', ci = 0.90) + 
   xlab("Gini (Cambio)") +
-  ylab("Cambio en Acuerdo con Redistribución") +
+  ylab("Cambio en Acuerdo con Redistribuci?n") +
   geom_hline(yintercept = 0, linetype = "dashed") +
   theme(axis.text=element_text(size=11),
         axis.title.y = element_text(size =12),
@@ -407,7 +408,7 @@ em_ing_giniwe1
 
 em_ing_pibbe1 = interplot(m = modelo_8, var1 = 'ingreso5_r', var2 = 'pib_mean', ci = 0.90) + 
   xlab("PIB (Promedio)") +
-  ylab("Cambio en Acuerdo con Redistribución") +
+  ylab("Cambio en Acuerdo con Redistribuci?n") +
   geom_hline(yintercept = 0, linetype = "dashed") +
   theme(axis.text=element_text(size=11),
         axis.title.y = element_text(size =12),
@@ -416,7 +417,7 @@ em_ing_pibbe1
 
 em_ing_pibwe1 = interplot(m = modelo_8, var1 = 'ingreso5_r', var2 = 'pib_dif', ci = 0.90) + 
   xlab("PIB (Cambio)") +
-  ylab("Cambio en Acuerdo con Redistribución") +
+  ylab("Cambio en Acuerdo con Redistribuci?n") +
   geom_hline(yintercept = 0, linetype = "dashed") +
   theme(axis.text=element_text(size=11),
         axis.title.y = element_text(size =12),
@@ -436,7 +437,7 @@ xtable(n_pais, digits = 0)
 xtable(n_ano, digits = 0)
 
 
-#ANEXO 2: ROS 4 / INGRESO / AÑO / PAÍSES
+#ANEXO 2: ROS 4 / INGRESO / A?O / PA?SES
 
 quintiles_ros4 = aggregate(lapop, by=list(lapop$pais, lapop$wave, lapop$ingreso5_r), FUN=mean, na.rm=TRUE) 
 quintiles_ros4$pais = quintiles_ros4$Group.1
@@ -447,9 +448,9 @@ quintiles_ros4$ingreso = quintiles_ros4$Group.3
 a2 = ggplot(quintiles_ros4, aes(x=ingreso, y=ros4, colour=ano)) + 
   geom_line(stat="identity", binwidth = 1, size = 1) +
   facet_wrap(~pais, ncol=3) +
-  scale_colour_grey(start = .7, end = .25, name="Año") +
+  scale_colour_grey(start = .7, end = .25, name="A?o") +
   scale_y_continuous(breaks = c(1:7), limits = c(1,7))+
-  labs(x = "Ingreso (Quintiles)", y = "Acuerdo con Redistribución", fill="") +
+  labs(x = "Ingreso (Quintiles)", y = "Acuerdo con Redistribuci?n", fill="") +
   theme(axis.text=element_text(size=15),
         strip.text=element_text(size=15),
         legend.text=element_text(size=15),
@@ -473,8 +474,8 @@ a3a= ggplot(m_between,
   geom_point() + 
   geom_smooth(method = "lm", colour="black") +
   geom_text(aes(label=Group.1),hjust=-0.1, vjust=-0.5, size=3.5) +
-  labs(x = "Desigualdad", y = "Acuerdo con Redistribución", fill="") +
-  scale_y_continuous("Acuerdo con Redistribución", limits = c(4.8,6.2), 
+  labs(x = "Desigualdad", y = "Acuerdo con Redistribuci?n", fill="") +
+  scale_y_continuous("Acuerdo con Redistribuci?n", limits = c(4.8,6.2), 
                      breaks = c(4.8,5.2,5.6,6)) +
   scale_x_continuous("Desigualdad", limits = c(40,60),
                      breaks = c(40,50,60)) +    
@@ -493,10 +494,10 @@ a3b= ggplot(m_between,
   geom_point() + 
   geom_smooth(method = "lm", colour="black") +
   geom_text(aes(label=Group.1),hjust=-0.1, vjust=-0.5, size=3.5) +
-  labs(x = "Desarrollo Económico", y = "Acuerdo con Redistribución", fill="") +
-  scale_y_continuous("Acuerdo con Redistribución", limits = c(4.8,6.2), 
+  labs(x = "Desarrollo Econ?mico", y = "Acuerdo con Redistribuci?n", fill="") +
+  scale_y_continuous("Acuerdo con Redistribuci?n", limits = c(4.8,6.2), 
                      breaks = c(4.8,5.2,5.6,6)) +
-  scale_x_continuous("Desarrollo Económico", limits = c(1,14),
+  scale_x_continuous("Desarrollo Econ?mico", limits = c(1,14),
                      breaks = c(5,10,15)) +  
   theme(panel.grid.major = element_line(colour = "grey"),
         legend.position="none",
@@ -531,8 +532,8 @@ a3c= ggplot(lapop_paisano1,
   geom_point(size = 2, alpha = .8) + 
   geom_smooth(size = 0.8, method = "lm", se = FALSE) +
   geom_text(aes(label=pais_ano),hjust=0.5, vjust=-0.6, size=3) + 
-  labs(x = "Desigualdad", y = "Acuerdo con Redistribución") + 
-  scale_y_continuous("Acuerdo con Redistribución", limits = c(4.2,6.7), 
+  labs(x = "Desigualdad", y = "Acuerdo con Redistribuci?n") + 
+  scale_y_continuous("Acuerdo con Redistribuci?n", limits = c(4.2,6.7), 
                      breaks = c(4.5,5,5.5,6,6.5)) +
   scale_x_continuous("Desigualdad",
                      breaks = c(40,50,60)) +  
@@ -552,10 +553,10 @@ a3d= ggplot(lapop_paisano1,
   geom_point(size = 2, alpha = .8) + 
   geom_smooth(size = 0.8, method = "lm", se = FALSE) +
   geom_text(aes(label=pais_ano),hjust=0.5, vjust=-0.6, size=3) + 
-  labs(x = "Desarrollo Económico", y = "Acuerdo con Redistribución") + 
-  scale_y_continuous("Acuerdo con Redistribución", limits = c(4.2,6.7), 
+  labs(x = "Desarrollo Econ?mico", y = "Acuerdo con Redistribuci?n") + 
+  scale_y_continuous("Acuerdo con Redistribuci?n", limits = c(4.2,6.7), 
                      breaks = c(4.5,5,5.5,6,6.5)) +
-  scale_x_continuous("Desarrollo Económico", breaks = c(5,10)) +
+  scale_x_continuous("Desarrollo Econ?mico", breaks = c(5,10)) +
   theme(panel.grid.major = element_line(colour = "grey"),
         legend.position="none",
         axis.text=element_text(size=10),
