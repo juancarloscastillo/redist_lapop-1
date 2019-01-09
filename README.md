@@ -19,7 +19,7 @@ search()
 
 + Lectura de bases de datos LAPOP 2008, 2010, 2012, 2014 y transformación a dataframe.
 
-```{r Bases, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Bases Merge, echo=TRUE, message=FALSE, warning=FALSE}
 #Directorio y bases de datos
 lp08 <- read_dta("Bases/OriginalLapop/2008.dta")
 lp10 <- read_dta("Bases/OriginalLapop/2010.dta")
@@ -39,7 +39,7 @@ names(lp14)= tolower(names(lp14))
 
 + Exploración y fundición de la bases de datos 
 
-```{r Fundir bases, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Fundir bases merge, echo=TRUE, message=FALSE, warning=FALSE}
 #Revisamos los primeros casos
 head (lp08)
 head (lp10)
@@ -95,9 +95,9 @@ lapop$`lapop$id` <-NULL
 table(lapop$pais, lapop$year)
 ```
  
-+ Base de datos fundida por LAPOP (Se utiliza esta base para las estimaciones)
++ Base de datos fundida por LAPOP (Se utiliza esta base para las estimaciones). Disponible [Aquí] (http://datasets.americasbarometer.org/database/index.php?freeUser=true)
 
-```{r Base Lapop, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Base Lapop publica, echo=TRUE, message=FALSE, warning=FALSE}
 #Directorio y bases de datos
 lapop <- read_dta("Bases/OriginalLapop/Lapop_reducida.dta")
 lapop=as.data.frame(lapop) #Transformación a Data Frame  
@@ -123,6 +123,34 @@ lapop$ingreso1 <-NULL
 lapop$ingreso2 <-NULL
 ```
  
++ Base LAPOP Full pagada por el Instituto de Ciencia Política UC (incorpora información omitida en la versión gratuita)
+
+```{r Base Lapop full, echo=TRUE, message=FALSE, warning=FALSE}
+#Directorio y bases de datos
+lapop <- read_dta("Bases/OriginalLapop/Lapop_full_reducida.dta")
+lapop=as.data.frame(lapop) #Transformación a Data Frame  
+names(lapop)= tolower(names(lapop)) #Nombres de las variables en minúscula
+
+#Nombre de variables 
+lapop=lapop %>% dplyr::select(pais, year, idnum, weight1500, wt, ros4, q1, q2, q11, q11n, l1, ocup4a, ed, q10, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lapop) <- c("pais","year", "id", "weight1500", "wt", "redistribucion", "sexo", "edad", "ecivil1", "ecivil2", "ideopolitica", "sitlaboral", "educacion", "ingreso1", "ingreso2", "zona", "tamanociudad", "conffaa", "confpolicia", "confjudicial", "confejecutivo", "confcongreso", "confpartidos", "hijos")
+
+#Ajuste de variables distintas entre años
+#Estado civil
+lapop$ecivil1[is.na(lapop$ecivil1)] <- 99
+lapop$ecivil2[is.na(lapop$ecivil2)] <- 99
+lapop$ecivil <- (lapop$ecivil1+lapop$ecivil2)-99
+lapop$ecivil1 <-NULL
+lapop$ecivil2 <-NULL
+#Ingreso
+lapop$ingreso1[is.na(lapop$ingreso1)] <- 99
+lapop$ingreso2[is.na(lapop$ingreso2)] <- 99
+lapop$ingreso <- (lapop$ingreso1 + lapop$ingreso2)-99
+lapop$ingreso[lapop$ingreso==99] <- NA
+lapop$ingreso1 <-NULL
+lapop$ingreso2 <-NULL
+```
+
 + Selección e identificación de los países y olas de la muestra
  
 ```{r Muestra de paises, echo=TRUE, message=FALSE, warning=FALSE}
@@ -147,6 +175,7 @@ describe(lapop$year)
 lapop$wave <- lapop$year
 lapop$wave=rec(lapop$wave, rec=c("2008=08", "2010=10", "2012=12", "2014=14"))
 describe(lapop$wave)
+with(lapop, table(lapop$pais, lapop$year))
 
 #Pais_Año:
 lapop$pais_wave <- do.call(paste, c(lapop[c("pais", "wave")], sep = "_")) 
@@ -158,11 +187,10 @@ lapop$redistribucion_r <-as.factor(lapop$redistribucion_r)
 
 # Log Natural
 lapop$redistribucion_ln <- log(lapop$redistribucion)
-#Tablas
+#Tablas de resumen
 table(lapop$redistribucion)
 table(lapop$redistribucion_r)
 table(lapop$redistribucion_ln)
-with(lapop, table(lapop$pais, lapop$year))
 
 #Hombre
 lapop$sexo <-as.numeric(lapop$sexo <= 1)
@@ -175,8 +203,8 @@ lapop$edad[lapop$edad<=17] <- NA
 # Cuadrática 
 lapop$edad2 <- (lapop$edad)^2
 #Tablas
-table(lapop$edad)
-table(lapop$edad2)
+describe(lapop$edad)
+describe(lapop$edad2)
 
 #Casado (o conviviente)
 lapop$ecivil <-as.factor(lapop$ecivil)
@@ -192,7 +220,8 @@ describe(lapop$ideopolitica)
 describe(lapop$izquierda)
 #Factor
 lapop$ideopolitica_f=rec(lapop$izquierda, rec="1:4=1; 5:6=2; 7:10=3")
-lapop$ideopolitica_f <-factor(lapop$ideopolitica_f, levels = c(1,2,3), labels = c("Derecha", "Centro", "Izquierda"))
+lapop$ideopolitica_f[is.na(lapop$ideopolitica_f)] = 99
+lapop$ideopolitica_f <-factor(lapop$ideopolitica_f, levels = c(1,2,3, 99), labels = c("Derecha", "Centro", "Izquierda", "No declarada"))
 describe(lapop$ideopolitica_f)
 
 #Situación Laboral
@@ -207,7 +236,7 @@ describe(lapop$educacion_r)
 
 #Urbano
 lapop$zona[lapop$zona==2] <- 0
-lapop$zona <-factor(lapop$zona, levels = c(0,1), labels = c("Rural", "Urbano"))
+lapop$zona <-factor(lapop$zona, levels = c(0, 1), labels = c("Rural", "Urbano"))
 table(lapop$zona)
 
 #Tamaño Ciudad
@@ -735,6 +764,19 @@ freq(lapop$decil[lapop$pais=="MEX" & lapop$year==2014])
 
 ```
 
++ Quintil y Decil de ingreso como variables categóricas con categoría de missing agregada 
+
+```{r Variable ingreso categórica, echo=TRUE, message=FALSE, warning=FALSE}
+lapop=as.data.frame(lapop)
+lapop$quintil_f <- lapop$quintil
+lapop$quintil_f [is.na(lapop$quintil_f)] <- 6
+describe(lapop$quintil_f)
+
+lapop$decil_f <- lapop$decil
+lapop$decil_f [is.na(lapop$decil_f)] <- 11
+describe(lapop$decil_f)
+```
+
 + Variable de Tiempo
 
 ```{r Tiempo, echo=TRUE, message=FALSE, warning=FALSE}
@@ -800,7 +842,7 @@ describe(lapop) #Estadísticos descriptivos de todas las variables
 
 ```{r Missing Data, echo=TRUE, message=FALSE, warning=FALSE}
 #Listwise variables N1
-lapop = na.omit(lapop)
+lapop1 = na.omit(lapop)
 lapop2 = lapop[complete.cases(lapop$redistribucion, lapop$sexo, lapop$edad, lapop$ecivil, 
                               lapop$izquierda, lapop$ideopolitica_f, lapop$sitlaboral, 
                               lapop$educacion, lapop$decil, lapop$zona,lapop$confianza),]
@@ -850,6 +892,43 @@ ftable(table3)
 ```
 
 **No se extraen las observaciones con missing hasta tener clara la manera de proceder para las 3 varaibles en cuestión. Se procede a dejar desarrollado el código de estimación de modelos con y sin ponderadores**
+
++ Gráficos Descriptivos de la variable dependiente
+
+```{r Descriptivos Redistribución, echo=TRUE, message=FALSE, warning=FALSE}
+#Figura 1: Promedio de redistribución por decil general
+lapop = lapop %>%  group_by(decil_f) %>% mutate(mean_redistribucion = mean(redistribucion, na.rm = TRUE))
+lapop$mean_redistribucion=round(lapop$mean_redistribucion, 2)
+bar_redistribucion=ggplot(lapop, aes(decil_f,mean_redistribucion))
+figura1 <- bar_redistribucion + geom_bar(stat = "summary") + 
+  coord_flip() +
+  scale_x_continuous(breaks = unique(lapop$decil_f)) +
+  scale_y_continuous(breaks = c(0:7),labels=c(0:7),limits=c(0,7)) +
+  theme(axis.text.x=element_text(size=7), axis.text.y=element_text(size=7),
+        axis.title=element_text(size=7,face="bold")) + 
+  labs(x="Decil de ingreso", y="Redistribución") +  geom_text(aes(label = mean_redistribucion), size = 3, vjust = 0.5, hjust=-0.2) 
+figura1
+ggsave("Figuras/Figura1.pdf", plot=figura1)
+ggsave("Figuras/Figura1.png", plot=figura1)
+
+#Figura 2: Promedio de redistribución por decil de ingreso según país 
+lapop = lapop %>%  group_by(pais, decil_f) %>% mutate(mean_redistribucionb = mean(redistribucion, na.rm = TRUE))
+lapop$mean_redistribucionb=round(lapop$mean_redistribucionb, 2)
+bar_redistribucionb=ggplot(lapop, aes(decil_f,mean_redistribucionb))
+figura2 <- bar_redistribucionb + geom_bar(stat = "summary") + 
+  facet_wrap(~lapop$pais_nombre, ncol = 3) +
+  coord_flip() +
+  scale_x_continuous(breaks = unique(lapop$decil_f)) +
+  scale_y_continuous(breaks = c(0:7),labels=c(0:7),limits=c(0,7)) +
+  theme(axis.text.x=element_text(size=20), 
+        axis.text.y=element_text(size=20),
+        axis.title=element_text(size=30,face="bold"),
+        strip.text=element_text(size=25)) + 
+  labs(x="Decil de ingreso", y="Redistribución") +  geom_text(aes(label = mean_redistribucionb), size = 10, vjust = 0.5, hjust=-0.2) 
+figura2
+ggsave("Figuras/Figura2.pdf", plot=figura2, height = 40, width = 40, units="in")
+ggsave("Figuras/Figura2.png", plot=figura2, height = 40, width = 40, units="in")
+```
 
 + Estadísticos Descriptivos
 
