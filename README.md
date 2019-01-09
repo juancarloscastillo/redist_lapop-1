@@ -1273,7 +1273,7 @@ em_ing_pibwe1
 
 ```
 
-+ Tablas y figuras anexo
++ Tablas y figuras anexo (falta por incoporar)
 
 ```{r Anexo, echo=TRUE, message=FALSE, warning=FALSE}
 
