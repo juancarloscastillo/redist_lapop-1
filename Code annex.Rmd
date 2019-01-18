@@ -1,0 +1,892 @@
+---
+title: "Code annex"
+author: "Gonzalo Franetovic"
+date: YYYY-MM-DD
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+As an annex, other processing and analysis of the data are presented below.
+
++ Install work packages
+
+```{r Packages, message=FALSE, warning=FALSE, include=FALSE}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(car, stargazer, haven, foreign, stargazer, xtable, psych, psy, base, magrittr, readxl, lme4, texreg, varhandle, countrycode, laeken, multilevel, ggplot2, ggthemes, extrafont, plyr, data.table, doBy, multiwayvcov, miceadds, RColorBrewer, scales, haven, margins, grDevices, interplot, lmtest, lsmeans, lattice, broom, sjPlot, lmerTest, labelled, dplyr, sjmisc, tidyverse, Hmisc, devtools, DescTools, descr)
+search()
+```
+
++ Other ways to work LAPOP: Reading of databases LAPOP 2008, 2010, 2012, 2014 and transformation to dataframe.
+
+```{r Databases, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#Directory and databases
+lp08 <- read_dta("Bases/OriginalLapop/2008.dta")
+lp10 <- read_dta("Bases/OriginalLapop/2010.dta")
+lp12 <- read_dta("Bases/OriginalLapop/2012.dta")
+lp14 <- read_dta("Bases/OriginalLapop/2014.dta")
+#Transformation to Data Frame 
+lp08=as.data.frame(lp08) 
+lp10=as.data.frame(lp10)
+lp12=as.data.frame(lp12)
+lp14=as.data.frame(lp14)
+#Name of the variables in minuscule
+names(lp08)= tolower(names(lp08)) 
+names(lp10)= tolower(names(lp10)) 
+names(lp12)= tolower(names(lp12)) 
+names(lp14)= tolower(names(lp14)) 
+```
+
++ Database exploration and merge
+
+```{r Merge Databases, eval=FALSE,, message=FALSE, warning=FALSE}
+#Reviewed the first six cases
+head (lp08)
+head (lp10)
+head (lp12)
+head (lp14)
+#Generate variable year for the base of 2014
+lp14$year <- "2014"
+#Selection of variables
+#2008
+lp081=lp08 %>% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp081) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+head (lp081)
+#2010
+lp101=lp10 %>% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp101) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+head (lp101)
+#2012
+lp121=lp12 %>% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp121) <- c("country","year", "id", "weight1500" , "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+head (lp121)
+#2014
+lp141=lp14 %>% dplyr::select(pais, year, uniq_id, weight1500, ros4, q1, q2, q11n, l1, ocup4a, ed, q10, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lp141) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+head (lp141)
+#Merge Databases
+lapop=rbind(lp081, lp101, lp121, lp141)
+lapop <- lapop[order(lapop$country), ]
+```
+ 
++ Imputing variable "WT" (Country Weight) from external database to weight in models estimation.
+ 
+```{r Database WT, eval=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+#Import external database
+wt <- read_dta("Databases/wt.dta")
+wt=as.data.frame(wt) #Transformation to Data Frame 
+colnames(wt) <- c("country", "year", "id", "wt")
+#Remove the countries and waves that we will not consider in the sample
+wt<-wt[!(wt$country>21),]
+wt$country[wt$country==21] <- "18"
+wt$country <- factor(wt$country,
+levels = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18),
+labels = c("MEX", "GTM", "SLV", "HND", "NIC", "CRI", "PAN", "COL", "ECU", "BOL", "PER", "PRY", "CHL", "URY", "BRA", "VEN", "ARG", "DOM"))
+wt<-wt[!(wt$year<2008),]
+wt <- wt[order(wt$country), ]
+#Merge: Observations are added with "wt", but without information for the study variants: Proceed to delete those cases
+lapop <- merge(lapop, wt, by=c("country", "year", "id"), all.x= TRUE)
+#Eliminate duplicate cases and generate variable for the merge
+lapop <- ddply(lapop, .(lapop$country, lapop$year, lapop$id), unique)
+lapop$`lapop$country` <-NULL
+lapop$`lapop$year` <-NULL
+lapop$`lapop$id` <-NULL
+#Check
+table(lapop$country, lapop$year)
+```
+
++ Other ways to work LAPOP: Database melted by LAPOP. Disponible [Here] (http://datasets.americasbarometer.org/database/index.php?freeUser=true)
+
+```{r Public Database Lapop, eval=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+#Directory and databases
+lapop <- read_dta("Bases/OriginalLapop/Lapop_reducida.dta")
+lapop=as.data.frame(lapop) #Transformation to Data Frame 
+names(lapop)= tolower(names(lapop)) #Name of the variables in minuscule
+
+#Names to variables 
+lapop=lapop %>% dplyr::select(pais, year, idnum, weight1500, wt, ros4, q1, q2, q11, q11n, l1, ocup4a, ed, q10, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
+colnames(lapop) <- c("country","year", "id", "weight1500", "wt", "redistribution", "man", "age", "married1", "married2", "ideology", "employment", "education", "income1", "income2", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+
+#Adjustment of different variables between years
+#Married
+lapop$married1[is.na(lapop$married1)] <- 99
+lapop$married2[is.na(lapop$married2)] <- 99
+lapop$married <- (lapop$married1+lapop$married2)-99
+lapop$married1 <-NULL
+lapop$married2 <-NULL
+#Income
+lapop$income1[is.na(lapop$income1)] <- 99
+lapop$income2[is.na(lapop$income2)] <- 99
+lapop$income <- (lapop$income1 + lapop$income2)-99
+lapop$income[lapop$income==99] <- NA
+lapop$income1 <-NULL
+lapop$income2 <-NULL
+```
+ 
++ Check individual level variables
+
+```{r Individual Level, echo=TRUE, message=FALSE, warning=FALSE}
+#Waves
+describe(lapop$wave)
+with(lapop, table(lapop$country, lapop$year))
+
+#Redistribution 
+#Tables
+table(lapop$redistribution)
+table(lapop$redistribution_r)
+table(lapop$redistribution_ln)
+
+#Man
+table(lapop$man)
+
+#Age
+#Tables
+describe(lapop$age)
+describe(lapop$age2)
+
+#Married (or cohabiting)
+table(lapop$married)
+table(lapop$married_r)
+
+#Left political ideology
+#Continue Variable
+describe(lapop$ideology)
+describe(lapop$left)
+#Factor Variable
+describe(lapop$ideology_f)
+
+#Employment
+describe(lapop$employment_r)
+
+#Education
+describe(lapop$education_r)
+
+#Urban Zone
+table(lapop$zone)
+
+#Size City
+describe(lapop$sizecity)
+
+#Average Trust
+describe(lapop$trust)
+
+#People in the home: the number of children in the household is taken as a proxy of the variable "people in the home" with a adjust of +1. This is used to estimate per capita income.
+lapop$nhome <- lapop$children+1
+describe(lapop$children)
+describe(lapop$nhome)
+```
+
+```{r Income Variable, echo=TRUE, message=FALSE, warning=FALSE}
+#INCOME: The midpoint of the range is imputed for each attribute of the response, according to the scale of each country (currency type). Then the per capita income is obtained by dividing by the number of people in the household, it is transformed into a logarithm and finally, it is transformed into quintiles and deciles.
+#--------------------------------------------------------------------#
+#Mexico: cod. 1
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="MEX"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="MEX"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="MEX"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="MEX"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="MEX"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="MEX"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="MEX"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="MEX"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="MEX"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="MEX"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="MEX"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="MEX"])
+#--------------------------------------------------------------------#
+#Guatemala: cod. 2
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="GTM"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="GTM"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="GTM"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="GTM"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="GTM"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="GTM"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="GTM"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="GTM"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="GTM"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="GTM"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="GTM"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="GTM"])
+#--------------------------------------------------------------------#
+#El salvador: cod. 3
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="SLV"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="SLV"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="SLV"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="SLV"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="SLV"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="SLV"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="SLV"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="SLV"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="SLV"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="SLV"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="SLV"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="SLV"])
+#--------------------------------------------------------------------#
+#HONDURAS: cod. 4
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="HND"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="HND"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="HND"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="HND"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="HND"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="HND"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="HND"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="HND"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="HND"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="HND"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="HND"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="HND"])
+#--------------------------------------------------------------------#
+#Nicaragua: cod. 5
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="NIC"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="NIC"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="NIC"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="NIC"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="NIC"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="NIC"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="NIC"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="NIC"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="NIC"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="NIC"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="NIC"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="NIC"])
+#--------------------------------------------------------------------#
+#Costa Rica: cod. 6
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="CRI"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="CRI"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="CRI"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="CRI"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="CRI"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="CRI"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="CRI"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="CRI"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="CRI"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="CRI"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="CRI"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="CRI"])
+#--------------------------------------------------------------------#
+#Panama: cod. 7
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="PAN"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="PAN"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="PAN"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="PAN"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="PAN"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="PAN"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="PAN"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="PAN"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="PAN"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="PAN"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="PAN"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="PAN"])
+#--------------------------------------------------------------------#
+#Colombia: cod. 8
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="COL"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="COL"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="COL"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="COL"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="COL"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="COL"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="COL"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="COL"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="COL"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="COL"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="COL"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="COL"])
+#--------------------------------------------------------------------#
+#Ecuador: cod. 9
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="ECU"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="ECU"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="ECU"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="ECU"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="ECU"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="ECU"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="ECU"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="ECU"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="GTM"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="ECU"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="ECU"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="ECU"])
+#--------------------------------------------------------------------#
+#Bolivia: cod. 10
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="BOL"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="BOL"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="BOL"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="BOL"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="BOL"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="BOL"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="BOL"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="BOL"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="BOL"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="BOL"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="BOL"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="BOL"])
+#--------------------------------------------------------------------#
+#Peru: cod. 11
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="PER"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="PER"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="PER"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="PER"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="PER"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="PER"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="PER"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="PER"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="PER"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="PER"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="PER"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="PER"])
+#--------------------------------------------------------------------#
+#Paraguay: cod. 12
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="PRY"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="PRY"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="PRY"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="PRY"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="PRY"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="PRY"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="PRY"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="PRY"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="PRY"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="PRY"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="PRY"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="PRY"])
+#--------------------------------------------------------------------#
+#Chile: cod. 13
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="CHL"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="CHL"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="CHL"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="CHL"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="CHL"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="CHL"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="CHL"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="CHL"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="CHL"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="CHL"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="CHL"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="CHL"])
+#--------------------------------------------------------------------#
+#Uruguay: cod. 14
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="URY"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="URY"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="URY"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="URY"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="URY"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="URY"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="URY"]))
+able(lapop$income_r[lapop$year==2012 & lapop$country=="URY"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="URY"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="URY"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="URY"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="URY"])
+#--------------------------------------------------------------------#
+#Brasil: cod. 15
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="BRA"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="BRA"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="BRA"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="BRA"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="BRA"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="BRA"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="BRA"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="BRA"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="BRA"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="BRA"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="BRA"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="BRA"])
+#--------------------------------------------------------------------#
+#Venezuela: cod. 16
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="VEN"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="VEN"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="VEN"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="VEN"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="VEN"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="VEN"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="VEN"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="VEN"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="VEN"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="VEN"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="VEN"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="VEN"])
+#--------------------------------------------------------------------#
+#Argentina: cod. 17
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="ARG"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="ARG"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="ARG"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="ARG"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="ARG"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="ARG"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="ARG"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="ARG"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="ARG"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="ARG"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="ARG"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="ARG"])
+#--------------------------------------------------------------------#
+#Republica Dominicana: cod. 18
+#2008
+freq(to_label(lapop$income[lapop$year==2008 & lapop$country=="DOM"]))
+table(lapop$income_r[lapop$year==2008 & lapop$country=="DOM"])
+summary(lapop$income_r[lapop$year==2008 & lapop$country=="DOM"])
+#2010
+freq(to_label(lapop$income[lapop$year==2010 & lapop$country=="DOM"]))
+table(lapop$income_r[lapop$year==2010 & lapop$country=="DOM"])
+summary(lapop$income_r[lapop$year==2010 & lapop$country=="DOM"])
+#2012
+freq(to_label(lapop$income[lapop$year==2012 & lapop$country=="DOM"]))
+table(lapop$income_r[lapop$year==2012 & lapop$country=="DOM"])
+summary(lapop$income_r[lapop$year==2012 & lapop$country=="DOM"])
+#2014
+freq(to_label(lapop$income[lapop$year==2014 & lapop$country=="DOM"]))
+table(lapop$income_r[lapop$year==2014 & lapop$country=="DOM"])
+summary(lapop$income_r[lapop$year==2014 & lapop$country=="DOM"])
+
+#Income punto medio
+freq(lapop$income_r)
+
+#Income per cápita
+freq(lapop$income_pc)
+
+#Quintiles
+freq(lapop$quintil)
+#Example: México
+freq(lapop$quintil[lapop$country=="MEX" & lapop$year==2008])
+freq(lapop$quintil[lapop$country=="MEX" & lapop$year==2010])
+freq(lapop$quintil[lapop$country=="MEX" & lapop$year==2012])
+freq(lapop$quintil[lapop$country=="MEX" & lapop$year==2014])
+
+#Deciles
+freq(lapop$decil)
+#Example: México
+freq(lapop$decil[lapop$country=="MEX" & lapop$year==2008])
+freq(lapop$decil[lapop$country=="MEX" & lapop$year==2010])
+freq(lapop$decil[lapop$country=="MEX" & lapop$year==2012])
+freq(lapop$decil[lapop$country=="MEX" & lapop$year==2014])
+```
+ 
+ + Quintile and Decil as factors ("missing" category is added)
+
+```{r Quintil/Decil, echo=TRUE, message=FALSE, warning=FALSE}
+#Continue
+describe(lapop$quintil)
+describe(lapop$decil)
+#Factor
+describe(lapop$quintil_f)
+describe(lapop$decil_f)
+#Dummy
+describe(lapop$quintil_d)
+describe(lapop$decil_d)
+``` 
+
++ Additional operations with missing value of the variables
+
+```{r Missing Data, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#Check missing values of conflicting variables
+describe(lapop)
+
+#Variable wt
+lapop$wt_m <- lapop$wt
+lapop$wt_m <- ifelse(is.na(lapop$wt_m), 1, 0)
+lapop$wt_m <-as.factor(lapop$wt_m)
+describe(lapop$wt)
+describe(lapop$wt_m)
+table1 <- xtabs(~wt_m+country+wave, data=lapop)
+table1
+
+#Variable income_pc
+lapop$income_pc_m <- lapop$income_pc
+lapop$income_pc_m <- ifelse(is.na(lapop$income_pc_m), 1, 0)
+lapop$income_pc_m <- as.factor(lapop$income_pc_m)
+describe(lapop$income_pc_m)
+describe(lapop$income_pc_m)
+table2 <- xtabs(~income_pc_m+country+wave, data=lapop)
+table2
+
+#Variable political ideology
+lapop$ideology_f_m <- lapop$ideology_f
+lapop$ideology_f_m <- ifelse(is.na(lapop$ideology_f_m), 1, 0)
+lapop$wt_m <-as.factor(lapop$ideology_f_m)
+describe(lapop$ideology_f)
+describe(lapop$ideology_f_m)
+table3 <- xtabs(~lapop$ideology_f_m+country+wave, data=lapop)
+table3
+
+#Tablas con la frecuencia de los missing
+ftable(table1) 
+ftable(table2)
+ftable(table3)
+```
+
++ Descriptive figures of the dependent variable: redistribution
+
+```{r Descriptive figures, echo=TRUE, message=FALSE, warning=FALSE}
+#Figure A: Average redistribution per decile of income
+lapop1 = lapop1 %>%  group_by(decil_f) %>% mutate(mean_redistribution = mean(redistribution, na.rm = TRUE))
+lapop1$mean_redistribution=round(lapop1$mean_redistribution, 2)
+bar_redistribution=ggplot(lapop1, aes(decil_f,mean_redistribution))
+figurea <- bar_redistribution + geom_bar(stat = "summary") + 
+  coord_flip() +
+  scale_x_continuous(breaks = unique(lapop1$decil_f)) +
+  scale_y_continuous(breaks = c(0:7),labels=c(0:7),limits=c(0,7)) +
+  theme(axis.text.x=element_text(size=7), axis.text.y=element_text(size=7),
+        axis.title=element_text(size=7,face="bold")) + 
+  labs(x="Decil of income", y="Redistribution Scale") +  geom_text(aes(label = mean_redistribution), size = 3, vjust = 0.5, hjust=-0.2) 
+figurea
+ggsave("Graphs/Figurea.png", plot=figurea)
+
+#Figure B: Average redistribution by decile of income by country
+lapop1 = lapop1 %>%  group_by(country, decil_f) %>% mutate(mean_redistributionb = mean(redistribution, na.rm = TRUE))
+lapop1$mean_redistributionb=round(lapop1$mean_redistributionb, 2)
+bar_redistributionb=ggplot(lapop1, aes(decil_f,mean_redistributionb))
+figureb <- bar_redistributionb + geom_bar(stat = "summary") + 
+  facet_wrap(~lapop1$country_name, ncol = 3) +
+  coord_flip() +
+  scale_x_continuous(breaks = unique(lapop1$decil_f)) +
+  scale_y_continuous(breaks = c(0:7),labels=c(0:7),limits=c(0,7)) +
+  theme(axis.text.x=element_text(size=20), 
+        axis.text.y=element_text(size=20),
+        axis.title=element_text(size=30,face="bold"),
+        strip.text=element_text(size=25)) + 
+  labs(x="Decil of income", y="Redistribution Scale") +  geom_text(aes(label = mean_redistributionb), size = 10, vjust = 0.5, hjust=-0.2) 
+figureb
+ggsave("Graphs/Figureb.png", plot=figureb, height = 40, width = 40, units="in")
+```
+
++ Multilevel estimation: Weighted models (Quintile)
+
+```{r Multilevel estimation, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#Null model: Country Year
+model_w0 = lmer(redistribution ~ 1 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w0)
+#Intraclass correlation estimation (ICC)
+varcomp=as.data.frame(VarCorr(model_w0))
+varcomp
+o2country=varcomp[2,4] 
+o2country_year=varcomp[1,4]
+o2individual=varcomp[3,4] 
+icc_country=o2country/(o2country+o2country_year+o2individual)
+icc_country_year=o2country_year/(o2country+o2country_year+o2individual)
+icc_individual=o2individual/(o2country+o2country_year+o2individual)
+
+icc_country #0.04100036
+icc_country_year #0.03440504
+icc_individual #0.9245946
+
+#1.Model: redistribution
+model_w1 = lmer(redistribution ~ 1 + quintil_f 
+                + year + (1 | country_wave) 
+                + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w1)
+
+##2.Model: individual predictors (H4)
+model_w2 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + year + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w2)
+
+###3. Model: individual predictors + GINI (H1 Y H2)
+model_w3 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif + year
+                + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w3)
+
+####4 Model: individual predictors + GINI  + PIB
+model_w4 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif + year
+                + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w4)
+
+#####5. Model: individual predictors + GINI  + PIB + Welfare State (H3)
+model_w5 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + welfare + year
+                + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w5)
+
+######6. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (H4.2)
+model_w6 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif + year
+                + (1 + quintil_f| country_wave) + (1 + quintil_f | country), data=lapop1, weights=wt)
+screenreg(model_w6)
+
+#######7. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*GINI) (H5)
+model_w7 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + quintil_f*gini_mean + quintil_f*gini_dif + year
+                + (1 + quintil_f | country_wave) + (1 + quintil_f | country), data=lapop1, weights=wt)
+screenreg(model_w7)
+
+########8. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*PIB)
+model_w8 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + quintil_f*pib_mean + quintil_f*pib_dif + year
+                + (1 + quintil_f | country_wave) + (1 + quintil_f | country), data=lapop1, weights=wt)
+screenreg(model_w8)
+
+#All Weighted models
+texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4, 
+            model_w5, model_w6, model_w7, model_w8), 
+       stars = c(0.01,0.05,0.1), dcolumn = TRUE)
+
+```
+
++ Multilevel estimation: Weighted models (Decile)
+
+```{r Multilevel estimation, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#Null model: Country Year
+model_w0 = lmer(redistribution ~ 1 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w0)
+#Intraclass correlation estimation (ICC)
+varcomp=as.data.frame(VarCorr(model_w0))
+varcomp
+o2country=varcomp[2,4] 
+o2country_year=varcomp[1,4]
+o2individual=varcomp[3,4] 
+icc_country=o2country/(o2country+o2country_year+o2individual)
+icc_country_year=o2country_year/(o2country+o2country_year+o2individual)
+icc_individual=o2individual/(o2country+o2country_year+o2individual)
+
+icc_country #0.04100036
+icc_country_year #0.03440504
+icc_individual #0.9245946
+
+#1.Model: redistribution
+model_w1 = lmer(redistribution ~ 1 + decil_f 
+                + year + (1 | country_wave) 
+                + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w1)
+
+##2.Model: individual predictors (H4)
+model_w2 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + year + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w2)
+
+###3. Model: individual predictors + GINI (H1 Y H2)
+model_w3 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif + year
+                + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w3)
+
+####4 Model: individual predictors + GINI  + PIB
+model_w4 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif + year
+                + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w4)
+
+#####5. Model: individual predictors + GINI  + PIB + Welfare State (H3)
+model_w5 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + welfare + year
+                + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
+screenreg(model_w5)
+
+######6. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (H4.2)
+model_w6 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif + year
+                + (1 + decil_f| country_wave) + (1 + decil_f | country), data=lapop1, weights=wt)
+screenreg(model_w6)
+
+#######7. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*GINI) (H5)
+model_w7 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + quintil_f*gini_mean + quintil_f*gini_dif + year
+                + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1, weights=wt)
+screenreg(model_w7)
+
+########8. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*PIB)
+model_w8 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + quintil_f*pib_mean + quintil_f*pib_dif + year
+                + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1, weights=wt)
+screenreg(model_w8)
+
+#All Weighted models
+texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4, 
+            model_w5, model_w6, model_w7, model_w8), 
+       stars = c(0.01,0.05,0.1), dcolumn = TRUE)
+
+```
+
++ Multilevel estimation: Unweighted models (Decile dummy)
+
+```{r Multilevel estimation, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#Null model: Country Year
+model_w0 = lmer(redistribution ~ 1 + (1 | country_wave) + (1 | country), data=lapop1)
+screenreg(model_w0)
+#Intraclass correlation estimation (ICC)
+varcomp=as.data.frame(VarCorr(model_w0))
+varcomp
+o2country=varcomp[2,4] 
+o2country_year=varcomp[1,4]
+o2individual=varcomp[3,4] 
+icc_country=o2country/(o2country+o2country_year+o2individual)
+icc_country_year=o2country_year/(o2country+o2country_year+o2individual)
+icc_individual=o2individual/(o2country+o2country_year+o2individual)
+
+icc_country #0.04100036
+icc_country_year #0.03440504
+icc_individual #0.9245946
+
+#1.Model: redistribution
+model_w1 = lmer(redistribution ~ 1 + decil_d 
+                + year + (1 | country_wave) 
+                + (1 | country), data=lapop1)
+screenreg(model_w1)
+
+##2.Model: individual predictors (H4)
+model_w2 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + year + (1 | country_wave) + (1 | country), data=lapop1)
+screenreg(model_w2)
+
+###3. Model: individual predictors + GINI (H1 Y H2)
+model_w3 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif + year
+                + (1 | country_wave) + (1 | country), data=lapop1)
+screenreg(model_w3)
+
+####4 Model: individual predictors + GINI  + PIB
+model_w4 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif + year
+                + (1 | country_wave) + (1 | country), data=lapop1)
+screenreg(model_w4)
+
+#####5. Model: individual predictors + GINI  + PIB + Welfare State (H3)
+model_w5 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + welfare + year
+                + (1 | country_wave) + (1 | country), data=lapop1)
+screenreg(model_w5)
+
+######6. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (H4.2)
+model_w6 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif + year
+                + (1 + decil_f| country_wave) + (1 + decil_f | country), data=lapop1)
+screenreg(model_w6)
+
+#######7. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*GINI) (H5)
+model_w7 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + decil_f*gini_mean + decil_f*gini_dif + year
+                + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1)
+screenreg(model_w7)
+
+########8. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*PIB)
+model_w8 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
+                + ideology_f + trust + employment_r + education_r 
+                + zone + gini_mean + gini_dif
+                + pib_mean + pib_dif
+                + decil_f*pib_mean + decil_f*pib_dif + year
+                + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1)
+screenreg(model_w8)
+
+#All Unweighted models
+texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4, 
+            model_w5, model_w6, model_w7, model_w8), 
+       stars = c(0.01,0.05,0.1), dcolumn = TRUE)
+
+```
+
++ Addtional Figures and tables
+
+```{r Figure C coefficients OLS, echo=TRUE, message=FALSE, warning=FALSE}
+#Coefficients of an OLS regression model 2
+plot_model(model_w2, show.intercept = TRUE , show.values = TRUE, vline.color = "black", value.offset = .3, transform = NULL, sort.est = T ,title = "Coefficients of an OLS regression model 2", dot.size = 1, colors="darkgrey") 
+```
+
+
