@@ -1,5 +1,5 @@
 ---
-title: 'Documento de código: Preferencias redistributivas en contextos desiguales'
+title: 'Code Document: Redistributive preferences in unequal contexts'
 author: "Gonzalo Franetovic"
 date: "18-11-2018"
 output:
