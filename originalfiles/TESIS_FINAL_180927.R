@@ -424,6 +424,10 @@ em_ing_pibwe1 = interplot(m = modelo_8, var1 = 'ingreso5_r', var2 = 'pib_dif', c
         axis.title.x = element_text(size = 12))
 em_ing_pibwe1
 
+
+
+
+
 ######################## ANEXOS ######################## ----
 
 #ANEXO 1: N MUESTRA
