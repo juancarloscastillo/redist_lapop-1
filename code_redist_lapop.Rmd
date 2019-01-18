@@ -1,7 +1,7 @@
 ---
 title: 'Documento de código: Preferencias redistributivas en contextos desiguales'
 author: "Gonzalo Franetovic"
-date: YYYY-MM-DD
+date: "18-11-2018"
 output:
   html_document: default
   pdf_document: default
