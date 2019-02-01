@@ -51,19 +51,19 @@ lp14$year <- "2014"
 #Selection of variables
 #2008
 lp081=lp08 %>% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
-colnames(lp081) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+colnames(lp081) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "ffaaconfidence", "policeconfidence", "judicialconfidence", "executiveconfidence", "congressconfidence", "polpartiesconfidence", "children")
 head (lp081)
 #2010
 lp101=lp10 %>% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
-colnames(lp101) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+colnames(lp101) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity","ffaaconfidence", "policeconfidence", "judicialconfidence", "executiveconfidence", "congressconfidence", "polpartiesconfidence", "children")
 head (lp101)
 #2012
 lp121=lp12 %>% dplyr::select(pais, year, idnum, weight1500, ros4, q1, q2, q11, l1, ocup4a, ed, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
-colnames(lp121) <- c("country","year", "id", "weight1500" , "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+colnames(lp121) <- c("country","year", "id", "weight1500" , "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "ffaaconfidence", "policeconfidence", "judicialconfidence", "executiveconfidence", "congressconfidence", "polpartiesconfidence", "children")
 head (lp121)
 #2014
 lp141=lp14 %>% dplyr::select(pais, year, uniq_id, weight1500, ros4, q1, q2, q11n, l1, ocup4a, ed, q10, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
-colnames(lp141) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+colnames(lp141) <- c("country","year", "id", "weight1500", "redistribution", "man", "age", "married", "ideology", "employment", "education", "income", "zone", "sizecity", "ffaaconfidence", "policeconfidence", "judicialconfidence", "executiveconfidence", "congressconfidence", "polpartiesconfidence", "children")
 head (lp141)
 #Merge Databases
 lapop=rbind(lp081, lp101, lp121, lp141)
@@ -106,7 +106,7 @@ names(lapop)= tolower(names(lapop)) #Name of the variables in minuscule
 
 #Names to variables 
 lapop=lapop %>% dplyr::select(pais, year, idnum, weight1500, wt, ros4, q1, q2, q11, q11n, l1, ocup4a, ed, q10, q10new, ur, tamano, b12, b18, b10a, b21a, b13, b21, q12)
-colnames(lapop) <- c("country","year", "id", "weight1500", "wt", "redistribution", "man", "age", "married1", "married2", "ideology", "employment", "education", "income1", "income2", "zone", "sizecity", "trustffaa", "trustpolice", "trustjudicial", "trustexecutive", "trustcongress", "trustpolparties", "children")
+colnames(lapop) <- c("country","year", "id", "weight1500", "wt", "redistribution", "man", "age", "married1", "married2", "ideology", "employment", "education", "income1", "income2", "zone", "sizecity", "ffaaconfidence", "policeconfidence", "judicialconfidence", "executiveconfidence", "congressconfidence", "polpartiesconfidence", "children")
 
 #Adjustment of different variables between years
 #Married
@@ -168,8 +168,8 @@ table(lapop$zone)
 #Size City
 describe(lapop$sizecity)
 
-#Average Trust
-describe(lapop$trust)
+#Average System Confidence
+describe(lapop$sysconf)
 
 #People in the home: the number of children in the household is taken as a proxy of the variable "people in the home" with a adjust of +1. This is used to estimate per capita income.
 lapop$nhome <- lapop$children+1
@@ -602,7 +602,7 @@ lapop1 = lapop1 %>%  group_by(country, decil_f) %>% mutate(mean_redistributionb 
 lapop1$mean_redistributionb=round(lapop1$mean_redistributionb, 2)
 bar_redistributionb=ggplot(lapop1, aes(decil_f,mean_redistributionb))
 figureb <- bar_redistributionb + geom_bar(stat = "summary") + 
-  facet_wrap(~lapop1$country_name, ncol = 3) +
+  facet_wrap(~lapop1$countryname, ncol = 3) +
   coord_flip() +
   scale_x_continuous(breaks = unique(lapop1$decil_f)) +
   scale_y_continuous(breaks = c(0:7),labels=c(0:7),limits=c(0,7)) +
@@ -643,57 +643,57 @@ screenreg(model_w1)
 
 ##2.Model: individual predictors (H4)
 model_w2 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + year + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
 screenreg(model_w2)
 
 ###3. Model: individual predictors + GINI (H1 Y H2)
 model_w3 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif + year
                 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
 screenreg(model_w3)
 
-####4 Model: individual predictors + GINI  + PIB
+####4 Model: individual predictors + GINI  + GDP
 model_w4 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif + year
+                + gdp_mean + gdp_dif + year
                 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
 screenreg(model_w4)
 
-#####5. Model: individual predictors + GINI  + PIB + Welfare State (H3)
+#####5. Model: individual predictors + GINI  + GDP + Welfare State (H3)
 model_w5 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
+                + gdp_mean + gdp_dif
                 + welfare + year
                 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
 screenreg(model_w5)
 
-######6. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (H4.2)
+######6. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (H4.2)
 model_w6 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif + year
+                + gdp_mean + gdp_dif + year
                 + (1 + quintil_f| country_wave) + (1 + quintil_f | country), data=lapop1, weights=wt)
 screenreg(model_w6)
 
-#######7. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*GINI) (H5)
+#######7. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (Decil*GINI) (H5)
 model_w7 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
+                + gdp_mean + gdp_dif
                 + quintil_f*gini_mean + quintil_f*gini_dif + year
                 + (1 + quintil_f | country_wave) + (1 + quintil_f | country), data=lapop1, weights=wt)
 screenreg(model_w7)
 
-########8. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*PIB)
+########8. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (Decil*GDP)
 model_w8 = lmer(redistribution ~ 1 + quintil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
-                + quintil_f*pib_mean + quintil_f*pib_dif + year
+                + gdp_mean + gdp_dif
+                + quintil_f*gdp_mean + quintil_f*gdp_dif + year
                 + (1 + quintil_f | country_wave) + (1 + quintil_f | country), data=lapop1, weights=wt)
 screenreg(model_w8)
 
@@ -709,7 +709,7 @@ texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4,
 ```{r Multilevel estimation, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 #Null model: Country Year
 model_w0 = lmer(redistribution ~ 1 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
-screenreg(model_w0)
+screenreg(model_w0,  stars = c(0.01,0.05,0.1))
 #Intraclass correlation estimation (ICC)
 varcomp=as.data.frame(VarCorr(model_w0))
 varcomp
@@ -728,63 +728,63 @@ icc_individual #0.9245946
 model_w1 = lmer(redistribution ~ 1 + decil_f 
                 + year + (1 | country_wave) 
                 + (1 | country), data=lapop1, weights=wt)
-screenreg(model_w1)
+screenreg(model_w1,  stars = c(0.01,0.05,0.1))
 
 ##2.Model: individual predictors (H4)
 model_w2 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + year + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
-screenreg(model_w2)
+screenreg(model_w2,  stars = c(0.01,0.05,0.1))
 
 ###3. Model: individual predictors + GINI (H1 Y H2)
 model_w3 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif + year
                 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
-screenreg(model_w3)
+screenreg(model_w3,  stars = c(0.01,0.05,0.1))
 
-####4 Model: individual predictors + GINI  + PIB
+####4 Model: individual predictors + GINI  + GDP
 model_w4 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif + year
+                + gdp_mean + gdp_dif + year
                 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
-screenreg(model_w4)
+screenreg(model_w4,  stars = c(0.01,0.05,0.1))
 
-#####5. Model: individual predictors + GINI  + PIB + Welfare State (H3)
+#####5. Model: individual predictors + GINI  + GDP + Welfare State (H3)
 model_w5 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
+                + gdp_mean + gdp_dif
                 + welfare + year
                 + (1 | country_wave) + (1 | country), data=lapop1, weights=wt)
-screenreg(model_w5)
+screenreg(model_w5,  stars = c(0.01,0.05,0.1))
 
-######6. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (H4.2)
+######6. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (H4.2)
 model_w6 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif + year
+                + gdp_mean + gdp_dif + year
                 + (1 + decil_f| country_wave) + (1 + decil_f | country), data=lapop1, weights=wt)
-screenreg(model_w6)
+screenreg(model_w6,  stars = c(0.01,0.05,0.1))
 
-#######7. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*GINI) (H5)
+#######7. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (Decil*GINI) (H5)
 model_w7 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
+                + gdp_mean + gdp_dif
                 + quintil_f*gini_mean + quintil_f*gini_dif + year
                 + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1, weights=wt)
-screenreg(model_w7)
+screenreg(model_w7,  stars = c(0.01,0.05,0.1))
 
-########8. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*PIB)
+########8. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (Decil*GDP)
 model_w8 = lmer(redistribution ~ 1 + decil_f + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
-                + quintil_f*pib_mean + quintil_f*pib_dif + year
+                + gdp_mean + gdp_dif
+                + quintil_f*gdp_mean + quintil_f*gdp_dif + year
                 + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1, weights=wt)
-screenreg(model_w8)
+screenreg(model_w8,  stars = c(0.01,0.05,0.1))
 
 #All Weighted models
 texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4, 
@@ -798,7 +798,7 @@ texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4,
 ```{r Multilevel estimation, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 #Null model: Country Year
 model_w0 = lmer(redistribution ~ 1 + (1 | country_wave) + (1 | country), data=lapop1)
-screenreg(model_w0)
+screenreg(model_w0,  stars = c(0.01,0.05,0.1))
 #Intraclass correlation estimation (ICC)
 varcomp=as.data.frame(VarCorr(model_w0))
 varcomp
@@ -817,63 +817,63 @@ icc_individual #0.9245946
 model_w1 = lmer(redistribution ~ 1 + decil_d 
                 + year + (1 | country_wave) 
                 + (1 | country), data=lapop1)
-screenreg(model_w1)
+screenreg(model_w1,  stars = c(0.01,0.05,0.1))
 
 ##2.Model: individual predictors (H4)
 model_w2 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + year + (1 | country_wave) + (1 | country), data=lapop1)
-screenreg(model_w2)
+screenreg(model_w2,  stars = c(0.01,0.05,0.1))
 
 ###3. Model: individual predictors + GINI (H1 Y H2)
 model_w3 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif + year
                 + (1 | country_wave) + (1 | country), data=lapop1)
-screenreg(model_w3)
+screenreg(model_w3,  stars = c(0.01,0.05,0.1))
 
-####4 Model: individual predictors + GINI  + PIB
+####4 Model: individual predictors + GINI  + GDP
 model_w4 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif + year
+                + gdp_mean + gdp_dif + year
                 + (1 | country_wave) + (1 | country), data=lapop1)
-screenreg(model_w4)
+screenreg(model_w4,  stars = c(0.01,0.05,0.1))
 
-#####5. Model: individual predictors + GINI  + PIB + Welfare State (H3)
+#####5. Model: individual predictors + GINI  + GDP + Welfare State (H3)
 model_w5 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
+                + gdp_mean + gdp_dif
                 + welfare + year
                 + (1 | country_wave) + (1 | country), data=lapop1)
-screenreg(model_w5)
+screenreg(model_w5,  stars = c(0.01,0.05,0.1))
 
-######6. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (H4.2)
+######6. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (H4.2)
 model_w6 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif + year
+                + gdp_mean + gdp_dif + year
                 + (1 + decil_f| country_wave) + (1 + decil_f | country), data=lapop1)
-screenreg(model_w6)
+screenreg(model_w6,  stars = c(0.01,0.05,0.1))
 
-#######7. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*GINI) (H5)
+#######7. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (Decil*GINI) (H5)
 model_w7 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
+                + gdp_mean + gdp_dif
                 + decil_f*gini_mean + decil_f*gini_dif + year
                 + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1)
-screenreg(model_w7)
+screenreg(model_w7,  stars = c(0.01,0.05,0.1))
 
-########8. Model: country, country_year  Model: individual predictors + GINI + PIB (Decil Aleatorio) (Decil*PIB)
+########8. Model: country, country_year  Model: individual predictors + GINI + GDP (Decil Aleatorio) (Decil*GDP)
 model_w8 = lmer(redistribution ~ 1 + decil_d + man + age + married_f 
-                + ideology_f + trust + employment_r + education_r 
+                + ideology_f + sysconf + employment_r + education_r 
                 + zone + gini_mean + gini_dif
-                + pib_mean + pib_dif
-                + decil_f*pib_mean + decil_f*pib_dif + year
+                + gdp_mean + gdp_dif
+                + decil_f*gdp_mean + decil_f*gdp_dif + year
                 + (1 + decil_f | country_wave) + (1 + decil_f | country), data=lapop1)
-screenreg(model_w8)
+screenreg(model_w8,  stars = c(0.01,0.05,0.1))
 
 #All Unweighted models
 texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4, 
@@ -886,7 +886,31 @@ texreg(list(model_w0, model_w1, model_w2, model_w3, model_w4,
 
 ```{r Figure C coefficients OLS, echo=TRUE, message=FALSE, warning=FALSE}
 #Coefficients of an OLS regression model 2
-plot_model(model_w2, show.intercept = TRUE , show.values = TRUE, vline.color = "black", value.offset = .3, transform = NULL, sort.est = T ,title = "Coefficients of an OLS regression model 2", dot.size = 1, colors="darkgrey") 
+figurec <- plot_model(model_w2, show.intercept = TRUE , show.values = TRUE, vline.color = "black", value.offset = .3, transform = NULL, sort.est = T ,title = "Coefficients of an OLS regression model 2", dot.size = 1, colors="darkgrey") 
+ggsave("Graphs/Figurec.png", plot=figurec, height = 5, width = 7, units="in")
+
+#Income deciles and agreement with redistribution, by country and year
+decil_redist = aggregate(lapop1, by=list(lapop$countryname, lapop$year, lapop$decil_f), FUN=mean, na.rm=TRUE) 
+decil_redist$country_name = decil_redist$Group.1
+decil_redist$year = as.factor(decil_redist$Group.2)
+decil_redist$decil_f = decil_redist$Group.3
+
+figured = ggplot(decil_redist, aes(x=decil_f, y=as.numeric(redistribution), colour=as.factor(year))) + 
+  geom_line(stat="identity", binwidth = 1, size = 1) +
+  facet_wrap(~country_name, ncol=3) +
+  scale_colour_grey(start = .7, end = .25, name="Wave") +
+  scale_y_continuous(breaks = c(1:7), limits = c(1,7))+
+  labs(x = "Income (Deciles)", y = "Agreement with Redistribution", fill="") +
+  theme(axis.text=element_text(size=15),
+        strip.text=element_text(size=15),
+        legend.text=element_text(size=15),
+        legend.title=element_text(size=15),
+        legend.key.size=unit(1,"cm"),
+        legend.position = "bottom",
+        panel.background = element_rect(fill = "white")) +
+  theme_hc()
+figured
+ggsave("Graphs/Figured.png", plot=figured, height = 10, width = 10, units="in")
 ```
 
 
