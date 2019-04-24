@@ -1,7 +1,7 @@
 ---
 title: 'Code Document: Redistributive preferences in unequal contexts'
 author: "Gonzalo Franetovic"
-date: "18-11-2018"
+date: "23-04-2019"
 output:
   html_document: default
   pdf_document: default
